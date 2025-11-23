@@ -5,48 +5,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - davenport downs</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
-        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
+    <style>
         :root {
-            /* Tema ELETROBRAS (Arquivo 1) reintroduzido */
-            --cor-fundo-principal: #ffffff; /* Fundo branco */
-            --cor-card-fundo: rgba(255, 255, 255, 0.9);
+            /* Tema davenport downs (Verde/Dourado) */
+            --cor-destaque-1: #008000; /* Verde escuro */
+            --cor-destaque-2: #ffcc00; /* Dourado/Amarelo */
+            --cor-fundo-card: rgba(255, 255, 255, 0.95);
             --cor-borda-input: #e0e0e0;
-            --cor-placeholder: #616161;
-            --cor-texto-claro: #212121; /* Texto escuro para fundo claro */
-            --cor-texto-escuro: #212121;
-            /* Destaques davenport downs (Verde/Dourado) mantidos */
-            --cor-destaque-1: #008000; /* Verde escuro (corporativo) */
-            --cor-destaque-2: #ffcc00; /* Dourado/Amarelo Petróleo */
-            --cor-botao-cadastro: linear-gradient(45deg, var(--cor-destaque-1), var(--cor-destaque-2));
-            --cor-shadow-card: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --cor-texto-principal: #212121;
+            --cor-placeholder: #9e9e9e;
+            --cor-sombra: 0 12px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* ESTILOS BASE (PADRÃO PARA DESKTOPS E TELAS MAIORES) */
+        /* ESTILOS BASE (MOBILE-FIRST) - Garantindo estabilidade em telas pequenas */
         body {
             font-family: 'Montserrat', sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px 0; /* Padding para mobile */
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Alinha ao topo em mobile */
             align-items: center;
-            min-height: 100vh; /* Mantido para telas grandes */
-            background-color: var(--cor-fundo-principal);
-            color: var(--cor-texto-escuro);
+            min-height: 100vh;
+            background-color: #f0f0f0; 
+            color: var(--cor-texto-principal);
             position: relative;
             overflow-x: hidden;
-            overflow-y: auto;
-            animation: fundoBrilho 10s infinite alternate;
         }
 
-        @keyframes fundoBrilho {
-            0% { background-color: #ffffff; }
-            100% { background-color: #f0f0f0; }
-        }
-
+        /* IMAGEM DE FUNDO - Consistente com o Cadastro */
         body::before {
             content: '';
             position: fixed;
@@ -54,121 +44,84 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url("https://images.unsplash.com/photo-1579294247481-9b1695427d14?q=80&w=2070&auto=format&fit=crop");
+            /* Imagem de Fundo sobre Energia/Petróleo */
+            background-image: url("https://images.unsplash.com/photo-1550684376-efd6f6e0b7f0?q=80&w=2070&auto=format&fit=crop");
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            opacity: 0.1;
+            opacity: 0.15; /* Sutil */
             z-index: -1;
-            filter: grayscale(100%) brightness(150%);
+            filter: grayscale(100%); 
+            transition: opacity 1s ease;
         }
 
         .title-platform {
-            font-size: 4em; 
-            font-weight: 700;
+            font-size: 3em; 
+            font-weight: 800;
             color: var(--cor-destaque-2); 
-            text-shadow: 0 0 20px var(--cor-destaque-2), 0 0 40px var(--cor-destaque-1);
-            letter-spacing: 3px; 
-            margin-bottom: 30px;
-            padding: 0 20px;
-            position: relative;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.6), 0 0 20px rgba(0, 128, 0, 0.4);
+            letter-spacing: 2px; 
+            margin-bottom: 25px;
+            padding: 0 10px;
             text-transform: uppercase;
-            animation: piscaDourado 1s infinite alternate;
-            white-space: nowrap; 
-        }
-
-        @keyframes piscaDourado {
-            0% { text-shadow: 0 0 10px var(--cor-destaque-2), 0 0 20px var(--cor-destaque-1); }
-            100% { text-shadow: 0 0 25px var(--cor-destaque-2), 0 0 50px var(--cor-destaque-1); }
+            text-align: center;
+            line-height: 1.1;
         }
         
-        /* Efeitos de pulso de luz (mantidos) */
-        .title-platform::before, .title-platform::after {
-            content: '';
-            position: absolute;
-            background-color: transparent;
-            border-radius: 50%;
-            animation: pulsoLuz 2s infinite ease-in-out;
-            opacity: 0;
-        }
+        /* Remove os pulso de luz (não necessário para o login) */
+        .title-platform::before, .title-platform::after { display: none; }
 
-        .title-platform::before {
-            width: 150px;
-            height: 150px;
-            top: 50%;
-            left: -50px;
-            transform: translateY(-50%);
-            box-shadow: 0 0 50px 30px var(--cor-destaque-2);
-            animation-delay: 0s;
-        }
-
-        .title-platform::after {
-            width: 150px;
-            height: 150px;
-            top: 50%;
-            right: -50px;
-            transform: translateY(-50%);
-            box-shadow: 0 0 50px 30px var(--cor-destaque-1);
-            animation-delay: 1s;
-        }
-
-        @keyframes pulsoLuz {
-            0% { transform: scale(0.5); opacity: 0.8; }
-            50% { transform: scale(1.2); opacity: 0; }
-            100% { transform: scale(0.5); opacity: 0.8; }
-        }
 
         .content {
-            background: var(--cor-card-fundo);
-            backdrop-filter: blur(10px);
-            padding: 50px;
-            border-radius: 20px;
+            background: var(--cor-fundo-card);
+            backdrop-filter: blur(8px);
+            padding: 30px 25px; /* Reduzido para mobile */
+            border-radius: 15px;
             text-align: center;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ddd;
-            position: relative;
+            width: 95%;
+            max-width: 450px;
+            box-shadow: var(--cor-sombra);
+            border: 1px solid #f0f0f0;
             z-index: 1;
-            animation: fadeIn 1.2s ease-out 0.5s backwards;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
         }
 
         h2 {
             margin-top: 0;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            color: var(--cor-texto-escuro);
+            margin-bottom: 25px;
+            font-size: 1.8em;
             font-weight: 700;
+            color: var(--cor-texto-principal);
+            border-bottom: 3px solid var(--cor-destaque-1);
+            display: inline-block;
+            padding-bottom: 5px;
         }
         
-        /* Estilizando os grupos de formulário */
         .form-group {
             position: relative;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: left;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: 600;
-            color: var(--cor-texto-escuro); 
+            color: var(--cor-texto-principal); 
             font-size: 0.9em;
+        }
+        
+        .input-wrapper {
+            position: relative;
         }
 
         .auth-form input {
             width: 100%;
-            padding: 14px 20px; /* Ajuste de padding para inputs mais finos */
+            padding: 14px 15px 14px 45px; /* Padding à esquerda para o ícone */
             border: 2px solid var(--cor-borda-input);
-            border-radius: 12px;
-            background-color: #f9f9f9; 
-            color: var(--cor-texto-escuro);
-            font-size: 1.1em;
+            border-radius: 10px;
+            background-color: #ffffff; 
+            color: var(--cor-texto-principal);
+            font-size: 1em; /* Ajustado para mobile */
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
             box-sizing: border-box;
         }
@@ -176,9 +129,20 @@
         .auth-form input:focus {
             outline: none;
             border-color: var(--cor-destaque-2); 
-            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+            box-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
         }
 
+        /* ESTILO DOS ÍCONES NOS CAMPOS (Consistente com Cadastro) */
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cor-destaque-1); 
+            font-size: 1.1em;
+            pointer-events: none; 
+        }
+        
         .toggle-password { 
             position: absolute; 
             right: 15px; 
@@ -187,148 +151,104 @@
             color: var(--cor-placeholder); 
             cursor: pointer; 
             transition: color 0.3s ease;
+            font-size: 1.1em;
+        }
+        .toggle-password:hover {
+            color: var(--cor-destaque-2);
         }
 
-
-        /* Estilos de erro, se existirem no contexto do login */
         .errorlist {
             list-style: none;
             padding: 0;
             margin: 5px 0 0 0;
             color: #dc3545; 
-            font-size: 0.9em;
+            font-size: 0.85em;
             font-weight: 500;
             text-align: left;
         }
 
+        /* Botão de Entrar (Consistente com Cadastro) */
         .submit-button { 
             width: 100%;
-            padding: 18px 20px; /* Ajuste de padding para botão mais fino */
+            padding: 16px 20px;
             border: none;
-            border-radius: 12px;
-            background: var(--cor-botao-cadastro);
-            color: var(--cor-texto-escuro); 
-            font-size: 1.2em;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--cor-destaque-1) 0%, var(--cor-destaque-2) 100%);
+            color: #fff; 
+            font-size: 1.1em;
             font-weight: 700;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            box-shadow: 0 8px 25px rgba(0, 128, 0, 0.4);
-            animation: pulsoBotaoPetroleo 1.8s infinite;
-            margin-top: 15px;
+            letter-spacing: 1.5px;
+            box-shadow: 0 8px 20px rgba(0, 128, 0, 0.5);
+            margin-top: 20px;
         }
-
-        @keyframes pulsoBotaoPetroleo {
-            0% { transform: scale(1); box-shadow: 0 8px 25px rgba(0, 128, 0, 0.4); }
-            50% { transform: scale(1.02); box-shadow: 0 12px 35px rgba(255, 204, 0, 0.6); }
-            100% { transform: scale(1); box-shadow: 0 8px 25px rgba(0, 128, 0, 0.4); }
-        }
-
+        
         .submit-button:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 10px 30px rgba(255, 204, 0, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 128, 0, 0.7);
         }
 
-        .login-link a, .support-link a {
+        .action-links {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .support-link a, .register-link a {
             display: block;
-            margin-top: 35px;
             color: var(--cor-destaque-2);
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease, text-shadow 0.3s ease;
+            padding: 5px 0;
+            font-size: 1.0em;
+        }
+        .support-link a {
+            color: var(--cor-destaque-1); /* Mudo para verde para o link principal */
             font-size: 1.1em;
         }
-
-        .login-link a {
-            margin-top: 15px; /* Ajuste para o link de cadastro ficar mais próximo */
+        .support-link a i {
+             margin-right: 5px;
+             font-size: 1.2em;
+        }
+        
+        .support-link a:hover, .register-link a:hover {
+             color: var(--cor-destaque-2);
+             text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
         }
 
-        .login-link a:hover, .support-link a:hover {
-            color: var(--cor-destaque-1);
-            text-shadow: 0 0 10px var(--cor-destaque-1);
-        }
 
-        /* Efeitos de partículas de energia/óleo */
-        .energia-particula {
-            position: fixed;
-            background-color: var(--cor-destaque-2);
-            border-radius: 50%;
-            box-shadow: 0 0 5px var(--cor-destaque-2);
-            animation: moveParticula 15s infinite linear, fadeParticula 5s infinite alternate;
-            opacity: 0;
-            z-index: 0;
-        }
-
-        @keyframes moveParticula {
-            0% { transform: translate(calc(var(--rand-x) * 100vw), calc(var(--rand-y) * 100vh)); }
-            100% { transform: translate(calc(var(--rand-x-end) * 100vw), calc(var(--rand-y-end) * 100vh)); }
-        }
-
-        @keyframes fadeParticula {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 0.5; }
-        }
-
-        /* ---------------------------------------------------------------------- */
-        /* MEDIA QUERY PARA TELAS PEQUENAS (MOBILE) */
-        /* ---------------------------------------------------------------------- */
-        @media (max-width: 600px) {
-            
+        /* MEDIA QUERY PARA TELAS MAIORES (Desktop) */
+        @media (min-width: 601px) {
             body {
-                min-height: auto; /* Permite que o body se ajuste ao conteúdo */
-                padding-top: 20px; /* Adiciona um pequeno espaçamento no topo */
-                padding-bottom: 20px; /* Adiciona um pequeno espaçamento na base */
-                justify-content: flex-start; /* Alinha o conteúdo ao topo para caber mais */
+                justify-content: center;
+                padding: 0;
             }
-
-            .title-platform {
-                font-size: 3em; /* Reduz o tamanho da fonte */
-                letter-spacing: 2px; 
-                margin-bottom: 20px; 
-                padding: 0 10px; 
-                white-space: normal;
-                text-align: center;
-            }
-            
-            /* Remove os pulsos de luz para economizar espaço e foco em mobile */
-            .title-platform::before, .title-platform::after {
-                display: none; 
-            }
-
             .content {
-                padding: 30px 20px; /* Reduz o padding interno */
-                width: 95%; /* Aumenta a largura para usar quase toda a tela */
-                max-width: 100%; 
-                border-radius: 10px; /* Arredondamento menor */
+                padding: 50px;
+                border-radius: 20px;
             }
-
+            .title-platform {
+                font-size: 4em;
+                margin-bottom: 30px;
+            }
             h2 {
-                font-size: 2em; /* Reduz o tamanho do título "Acesse sua conta" */
-                margin-bottom: 20px;
+                font-size: 2.2em;
             }
-
-            .form-group {
-                margin-bottom: 20px; /* Reduz a margem entre campos */
-            }
-
             .auth-form input {
-                padding: 12px 15px; /* Reduz um pouco o tamanho dos inputs */
-                font-size: 1em;
-            }
-            
-            .submit-button {
-                padding: 16px 15px; /* Reduz um pouco o tamanho do botão */
+                padding: 16px 15px 16px 50px; /* Mais padding para o ícone em desktop */
                 font-size: 1.1em;
-                letter-spacing: 1px;
             }
-
-            .login-link a, .support-link a {
-                margin-top: 20px; /* Ajuste final de espaçamento */
+            .input-icon {
+                 left: 18px;
+                 font-size: 1.2em;
             }
-
-            .login-link a {
-                margin-top: 10px;
+            .submit-button {
+                padding: 18px 20px;
+                font-size: 1.2em;
             }
         }
     </style>
@@ -337,7 +257,7 @@
     <div class="title-platform">davenport downs</div>
     <div class="content">
         <div class="header">
-            <h2>Acesse sua conta</h2>
+            <h2><i class="fas fa-lock-open"></i> Acesse sua conta</h2>
         </div>
         
         <form method="post" class="auth-form">
@@ -347,68 +267,76 @@
             {% if form.non_field_errors %}
                 <ul class="errorlist">
                     {% for error in form.non_field_errors %}
-                        <li>{{ error }}</li>
+                        <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
                     {% endfor %}
                 </ul>
             {% endif %}
 
+            {# CAMPO: Número de Telefone (Username) #}
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Número de Telefone:</label>
-                <div style="position: relative;">
+                <div class="input-wrapper">
+                    <i class="fas fa-mobile-alt input-icon"></i> 
                     {{ form.username }}
                 </div>
                 {# Adiciona a exibição de erros do campo username #}
                 {% if form.username.errors %}
                     <ul class="errorlist">
                         {% for error in form.username.errors %}
-                            <li>{{ error }}</li>
+                            <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
             </div>
             
+            {# CAMPO: Senha #}
             <div class="form-group">
                 <label for="{{ form.password.id_for_label }}">Senha:</label>
-                <div style="position: relative;">
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i> 
                     {{ form.password }}
-                    {# Adicionado ícone de olho e seu ID para o script #}
                     <i class="fas fa-eye toggle-password" id="togglePassword"></i>
                 </div>
                 {# Adiciona a exibição de erros do campo password #}
                 {% if form.password.errors %}
                     <ul class="errorlist">
                         {% for error in form.password.errors %}
-                            <li>{{ error }}</li>
+                            <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
             </div>
             
-            <button type="submit" class="submit-button">Entrar</button>
+            <button type="submit" class="submit-button">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
         </form>
         
-        <div class="support-link">
-            {% if whatsapp_link %}
-                <a href="{{ whatsapp_link }}" target="_blank">
-                    <i class="fab fa-whatsapp"></i> Suporte
-                </a>
-            {% else %}
-                <a href="#">
-                    <i class="fab fa-whatsapp"></i> Suporte
-                </a>
-            {% endif %}
-        </div>
-        <div class="login-link">
-            <a href="{% url 'cadastro' %}">Não tem conta? Cadastre-se</a>
+        <div class="action-links">
+            <div class="support-link">
+                {% if whatsapp_link %}
+                    <a href="{{ whatsapp_link }}" target="_blank" aria-label="Suporte via WhatsApp">
+                        <i class="fab fa-whatsapp"></i> Suporte
+                    </a>
+                {% else %}
+                    <a href="#" aria-label="Suporte">
+                        <i class="fab fa-whatsapp"></i> Suporte
+                    </a>
+                {% endif %}
+            </div>
+            <div class="register-link">
+                <a href="{% url 'cadastro' %}">Não tem conta? Cadastre-se</a>
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Lógica do botão de alternar senha
-            const setupPasswordToggle = (toggleId, inputId) => {
-                const toggle = document.querySelector(`#KZ{toggleId}`);
-                const input = document.querySelector(`#KZ{inputId}`);
+            // Lógica do botão de alternar senha (adaptada para nome do campo)
+            const setupPasswordToggle = (toggleId, inputName) => {
+                const toggle = document.getElementById(toggleId);
+                // Encontrar o input pelo nome, pois o ID é dinâmico do Django
+                const input = document.querySelector(`input[name="KZ{inputName}"]`);
                 
                 if (toggle && input) {
                     toggle.addEventListener('click', function (e) {
@@ -420,34 +348,18 @@
                 }
             };
 
-            // Para o login, o campo de senha é 'password'
-            const passwordInput = document.querySelector('input[name="password"]');
+            setupPasswordToggle('togglePassword', 'password');
 
-            if(passwordInput) setupPasswordToggle('togglePassword', passwordInput.id);
-
-            // Código para criar as partículas de energia/óleo
-            const numParticulas = 30;
-            const body = document.body;
-
-            for (let i = 0; i < numParticulas; i++) {
-                const particula = document.createElement('div');
-                particula.classList.add('energia-particula');
-                
-                const size = Math.random() * 8 + 3;
-                particula.style.width = `KZ{size}px`;
-                particula.style.height = `KZ{size}px`;
-                particula.style.backgroundColor = i % 2 === 0 ? 'var(--cor-destaque-1)' : 'var(--cor-destaque-2)';
-
-                const delay = Math.random() * 10;
-                particula.style.animationDelay = `KZ{delay}s`;
-
-                particula.style.setProperty('--rand-x', Math.random() * 2 - 0.5);
-                particula.style.setProperty('--rand-y', Math.random() * 2 - 0.5);
-                particula.style.setProperty('--rand-x-end', Math.random() * 2 - 0.5);
-                particula.style.setProperty('--rand-y-end', Math.random() * 2 - 0.5);
-
-                body.appendChild(particula);
-            }
+            // Adicionar atributos de placeholder dinamicamente
+            const setPlaceholder = (fieldName, text) => {
+                const input = document.querySelector(`input[name="KZ{fieldName}"]`);
+                if (input) {
+                    input.setAttribute('placeholder', text);
+                }
+            };
+            
+            setPlaceholder('username', 'Digite seu número de telefone');
+            setPlaceholder('password', 'Digite sua senha');
         });
     </script>
 </body>
