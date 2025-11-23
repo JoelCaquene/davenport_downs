@@ -114,7 +114,7 @@ def user_login(request):
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
-            authenticate(request, user)
+            # REMOVIDA CHAMADA INCORRETA: authenticate(request, user)
             login(request, user)
             return redirect('menu')
     else:
