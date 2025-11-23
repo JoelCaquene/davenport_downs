@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SAUDI ARAMCO</title>
+    <title>Login - davenport downs</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
         @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
@@ -17,7 +17,7 @@
             --cor-placeholder: #616161;
             --cor-texto-claro: #212121; /* Texto escuro para fundo claro */
             --cor-texto-escuro: #212121;
-            /* Destaques SAUDI ARAMCO (Verde/Dourado) mantidos */
+            /* Destaques davenport downs (Verde/Dourado) mantidos */
             --cor-destaque-1: #008000; /* Verde escuro (corporativo) */
             --cor-destaque-2: #ffcc00; /* Dourado/Amarelo Petróleo */
             --cor-botao-cadastro: linear-gradient(45deg, var(--cor-destaque-1), var(--cor-destaque-2));
@@ -334,7 +334,7 @@
     </style>
 </head>
 <body>
-    <div class="title-platform">SAUDI ARAMCO</div>
+    <div class="title-platform">davenport downs</div>
     <div class="content">
         <div class="header">
             <h2>Acesse sua conta</h2>
@@ -407,8 +407,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Lógica do botão de alternar senha
             const setupPasswordToggle = (toggleId, inputId) => {
-                const toggle = document.querySelector(`#${toggleId}`);
-                const input = document.querySelector(`#${inputId}`);
+                const toggle = document.querySelector(`#KZ{toggleId}`);
+                const input = document.querySelector(`#KZ{inputId}`);
                 
                 if (toggle && input) {
                     toggle.addEventListener('click', function (e) {
@@ -434,12 +434,12 @@
                 particula.classList.add('energia-particula');
                 
                 const size = Math.random() * 8 + 3;
-                particula.style.width = `${size}px`;
-                particula.style.height = `${size}px`;
+                particula.style.width = `KZ{size}px`;
+                particula.style.height = `KZ{size}px`;
                 particula.style.backgroundColor = i % 2 === 0 ? 'var(--cor-destaque-1)' : 'var(--cor-destaque-2)';
 
                 const delay = Math.random() * 10;
-                particula.style.animationDelay = `${delay}s`;
+                particula.style.animationDelay = `KZ{delay}s`;
 
                 particula.style.setProperty('--rand-x', Math.random() * 2 - 0.5);
                 particula.style.setProperty('--rand-y', Math.random() * 2 - 0.5);

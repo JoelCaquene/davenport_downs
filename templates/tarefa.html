@@ -5,53 +5,58 @@
 
 {% block content %}
 <div class="page-container">
-    <div class="page-header">
+    {# A. HEADER (MANTIDO, AJUSTE DE TEMA PARA FAZENDA) #}
+    <div class="page-header farm-header">
         <h1>Tarefas Diárias</h1>
     </div>
 
     {% if not has_active_level %}
+    {# B. INSTRUÇÕES PARA NÍVEL INATIVO #}
     <div class="sub-section">
-             <div class="full-width-image-container">
-                <img src="{% static 'images/tarefa2_icon.png' %}" alt="inatruções Imagem principal" class="full-width-image">
+            <div class="full-width-image-container">
+                {# Mudança na imagem: Usando uma imagem de fazenda #}
+                <img src="{% static 'images/cattle_empty.png' %}" alt="Instruções Imagem principal" class="full-width-image">
             </div>
             <div class="header">
                 <h2>Instruções</h2>
             </div>
 
-        <div class="info-box-danger">
-            <p>✨✨✨✨ A SUA MÁQUINA DE REFINARIA DE PETRÓLEO, ESTA SEM PRODUTO ✨✨✨✨
-                
-            <p>✨✨✨✨COMPRE MATÉRIA BRUTA, PARA REFINAR E COMEÇAR A GANHAR, VISITA A PAGINA PERFIL, ESCOLHA PRODUTO, VÁ NO DEPOSITO REALIZA DEPOSITO, E VOLTE NO PERFIL, VÁ NO NIVEL, E COMPRA PRODUTO, A SUA REFINARIA ESTARÁ ACTIVA✨✨✨✨</p>
+        <div class="info-box-danger farm-alert">
+            <p>O SEU CURRAL DE ALIMENTAÇÃO ESTÁ VAZIO, COMPRE GADO</p>
         </div>
     {% else %}
         
-        <div class="refinery-image-top-container">
-            <img src="{% static 'images/refinaria_banner.jpg' %}" alt="Refinaria de Petróleo" class="refinery-banner-image">
+        {# C. IMAGEM DE TOPO (BANNER) #}
+        {# Usando o banner da imagem que você forneceu: image_0c8b3f.png #}
+        <div class="cattle-image-top-container">
+            <img src="{% static 'images/refinaria_banner.jpg' %}" alt="Curral de Gado" class="cattle-banner-image">
         </div>
 
-        <div class="task-machine-container refinery-style">
+        {# D. CONTAINER PRINCIPAL DA TAREFA (POSTO DE ALIMENTAÇÃO) #}
+        <div class="task-machine-container farm-style">
             
-            <div class="refinery-tower">
-                <div class="tower-pipe pipe-left"></div>
-                <div class="tower-pipe pipe-right"></div>
-                
-                <div class="machine-screen refinery-screen">
-                    <p id="task-message">Clique no botão abaixo para trabalhar e gerar seu ganho diário!</p>
-                </div>
+            <div class="feeding-station-visual">
+                <i class="fa-solid fa-cow cattle-icon"></i>
+                <div class="feed-trough"></div>
             </div>
 
-            <div class="machine-body refinery-body">
-                <div class="machine-light-container refinery-lights">
+            <div class="machine-screen farm-screen">
+                <p id="task-message">Clique no botão abaixo para trabalhar e gerar seu ganho diário!</p>
+            </div>
+
+            <div class="machine-body farm-body">
+                <div class="machine-light-container farm-lights">
                     <div class="machine-light red-light" id="light-red"></div>
                     <div class="machine-light yellow-light" id="light-yellow"></div>
                     <div class="machine-light green-light" id="light-green"></div>
                 </div>
                 
-                <button id="work-button" class="work-button refinery-valve-button">REFINAR</button>
+                {# BOTÃO DE AÇÃO: MUDADO PARA ALIMENTAR #}
+                <button id="work-button" class="work-button feed-button">ALIMENTAR</button>
             </div>
         </div>
 
-        {# Mensagens do Django podem ser exibidas aqui, se houver #}
+        {# E. MENSAGENS E LÓGICA DJANGO (MANTIDA) #}
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -60,23 +65,19 @@
             </ul>
         {% endif %}
 
-        <div class="tasks-info">
-            <p><strong>Nível Ativo:</strong> {{ active_level.level.name|default:"Nenhum" }}</p>
-            <p><strong>Tarefas diárias restantes:</strong> <span id="tasks-remaining">0</span></p>
-        </div>
-
+        {# F. INFORMAÇÕES DE NÍVEL E TAREFAS (REMOVIDAS, mas a variável JS é mantida para a lógica) #}
+        {# REMOVIDO: <div class="tasks-info"> ... </div> #}
+        
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const workButton = document.getElementById('work-button');
                 const taskMessage = document.getElementById('task-message');
-                const tasksRemainingSpan = document.getElementById('tasks-remaining');
                 
                 // Elementos de luzes
                 const lightRed = document.getElementById('light-red');
                 const lightYellow = document.getElementById('light-yellow');
                 const lightGreen = document.getElementById('light-green');
 
-                // Estes valores devem ser passados do backend.
                 // Variáveis do Django para JS (LÓGICA MANTIDA)
                 let tasksCompletedToday = {{ tasks_completed_today|default:0 }}; 
                 let maxTasks = {{ max_tasks|default:1 }};
@@ -89,14 +90,15 @@
                     const tasksRemaining = maxTasks - tasksCompletedToday;
 
                     if (isWorking) {
-                        // Estado de processamento
+                        // Estado de processamento (Amarelo)
                         lightYellow.classList.add('blinking');
+                        workButton.textContent = "ALIMENTANDO...";
                     } else if (tasksRemaining > 0) {
-                        // Pronto para trabalhar (Luz Vermelha Piscando)
+                        // Pronto para trabalhar (Vermelho Pisca)
                         lightRed.classList.add('blinking');
-                        workButton.textContent = "REFINAR";
+                        workButton.textContent = "ALIMENTAR";
                     } else {
-                        // Tarefas concluídas (Luz Verde Acesa)
+                        // Tarefas concluídas (Verde Aceso)
                         lightGreen.classList.add('active');
                         workButton.textContent = "CONCLUÍDO";
                     }
@@ -108,19 +110,16 @@
                     if (tasksRemaining <= 0) {
                         if (workButton) {
                             workButton.disabled = true;
-                            taskMessage.textContent = "Você já completou suas tarefas diárias.";
+                            taskMessage.textContent = "Seu gado está satisfeito! Tarefas diárias concluídas.";
                         }
                     } else {
                          if (workButton) {
                             workButton.disabled = false;
-                            taskMessage.textContent = "Clique no botão abaixo para trabalhar e gerar seu ganho diário!";
+                            taskMessage.textContent = "Clique no botão abaixo para alimentar seu gado e gerar seu ganho diário!";
                         }
                     }
                     
-                    if (tasksRemainingSpan) {
-                        tasksRemainingSpan.textContent = Math.max(0, tasksRemaining);
-                    }
-                    
+                    // A Span tasksRemainingSpan foi removida do HTML, mas a lógica de status da luz permanece.
                     updateLightStatus();
                 }
         
@@ -128,28 +127,28 @@
                     workButton.addEventListener('click', function() {
                         if (tasksCompletedToday < maxTasks) {
                             workButton.disabled = true;
-                            taskMessage.textContent = "Processando o Petróleo... aguarde.";
+                            taskMessage.textContent = "Preenchendo o Curral com Ração... aguarde.";
                             updateLightStatus(true); // Ativa o estado de processamento
 
-                            // Fazer uma requisição AJAX para o backend aqui (LÓGICA MANTIDA)
+                            // REQUISIÇÃO AJAX MANTIDA EXATAMENTE COMO ESTAVA
                             fetch("{% url 'process_task' %}", {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
-                                    'X-CSRFToken': '{{ csrf_token }}' // Necessário para POST requests no Django
+                                    'X-CSRFToken': '{{ csrf_token }}'
                                 }
                             })
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
                                     tasksCompletedToday++;
-                                    taskMessage.textContent = `Tarefa concluída! Ganho diário: $ ${data.daily_gain}.`;
-                                    // Atualizar o saldo do usuário na página se necessário
+                                    // MENSAGEM DE SUCESSO PERSONALIZADA
+                                    taskMessage.textContent = `Gado alimentado com sucesso! Ganho diário: KZ ${data.daily_gain}.`;
                                 } else {
-                                    taskMessage.textContent = data.message || "Ocorreu um erro ao processar a tarefa.";
+                                    taskMessage.textContent = data.message || "Ocorreu um erro ao alimentar o gado.";
                                 }
                                 checkTasksStatus();
-                                workButton.disabled = (maxTasks - tasksCompletedToday <= 0); // Reativa se houver tarefas restantes
+                                workButton.disabled = (maxTasks - tasksCompletedToday <= 0);
                             })
                             .catch(error => {
                                 console.error('Erro:', error);
@@ -167,169 +166,168 @@
 
 <style>
     /* ------------------------------------ */
-    /* NOVO DESIGN: REFINARIA DE PETRÓLEO */
+    /* NOVO DESIGN: FAZENDA E ALIMENTAÇÃO */
     /* ------------------------------------ */
     
     .page-container {
-        padding: 10px;
+        padding: 15px;
+        background-color: #ffffff; /* Fundo Branco */
     }
 
-    .page-header {
-        background-color: #0d1a2f; /* Fundo mais escuro */
-        border-bottom: 3px solid #87CEEB; /* Borda temática */
+    /* Cabeçalho */
+    .farm-header {
+        background-color: #ffffff; 
+        padding: 10px 0;
+        text-align: center;
+        border-bottom: 3px solid #4CAF50; /* Borda verde da fazenda */
     }
-    .page-header h1 {
-        color: #87CEEB; /* Cor azul claro */
-        text-shadow: 0 0 5px rgba(135, 206, 235, 0.5);
+    .farm-header h1 {
+        color: #0d1a2f; /* Cor escura */
+        text-shadow: none;
+        font-weight: 800;
+        font-size: 1.8rem;
+        margin: 0;
     }
     
-    /* Imagem de Topo */
-    .refinery-image-top-container {
-        margin: -10px -10px 20px -10px; /* Expande para as bordas do page-container */
+    /* Imagem de Topo (Banner) */
+    .cattle-image-top-container {
+        margin: -15px -15px 20px -15px;
         overflow: hidden;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-        border-bottom: 3px solid #1a3250;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        border-bottom: 5px solid #4CAF50;
     }
-    .refinery-banner-image {
+    .cattle-banner-image {
         width: 100%;
-        height: 150px;
+        height: 180px;
         object-fit: cover;
-        filter: brightness(0.7) grayscale(0.1); /* Toque industrial */
+        filter: none; /* Imagem nítida */
     }
 
-    /* Container Principal da Máquina (Refinaria) */
-    .task-machine-container.refinery-style {
-        background: linear-gradient(to bottom, #1a3250, #0d1a2f);
-        border: 4px solid #000;
-        border-radius: 15px;
-        max-width: 380px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(255, 255, 255, 0.05);
-    }
-
-    /* Estrutura da Torre (Novo Elemento Visual) */
-    .refinery-tower {
-        position: relative;
-        background-color: #333;
+    /* Alerta de Nível Inativo */
+    .farm-alert {
+        background-color: #fff8e1; /* Amarelo claro suave */
+        color: #e65100; /* Laranja da ração */
+        border: 2px solid #ffb300;
+        padding: 15px;
         border-radius: 8px;
-        padding: 10px;
-        margin: 10px 0;
-        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.7);
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .farm-alert p {
+        margin: 5px 0;
+        line-height: 1.4;
+        font-size: 0.9rem;
     }
 
-    /* Tubulações */
-    .tower-pipe {
-        position: absolute;
-        top: 0;
-        width: 8px;
-        height: 100%;
-        background-color: #666;
-        border: 1px solid #999;
-        border-radius: 5px;
-        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
+
+    /* Container Principal da Tarefa (Estilo Fazenda) */
+    .task-machine-container.farm-style {
+        background: #f0f4f7; /* Cinza claro */
+        border: 4px solid #b3884e; /* Marrom da madeira/curral */
+        border-radius: 15px;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 10px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15), inset 0 0 10px rgba(255, 255, 255, 0.8);
     }
-    .pipe-left { left: 5px; }
-    .pipe-right { right: 5px; }
+
+    /* Visual do Curral/Gado */
+    .feeding-station-visual {
+        text-align: center;
+        padding: 15px 0;
+        position: relative;
+    }
+    .cattle-icon {
+        font-size: 4rem;
+        color: #b3884e; /* Cor marrom */
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        margin-bottom: 10px;
+        display: block;
+    }
+    .feed-trough {
+        width: 80%;
+        height: 10px;
+        background-color: #8d6e63; /* Cocho de alimentação marrom */
+        border-radius: 5px;
+        margin: 0 auto;
+        box-shadow: inset 0 3px 5px rgba(0,0,0,0.3);
+        position: relative;
+    }
 
     /* Tela de Status */
-    .machine-screen.refinery-screen {
-        background-color: #00002d;
-        color: #FFC107; /* Cor de alerta ou petróleo */
-        border: 2px solid #FFC107;
-        box-shadow: inset 0 0 15px rgba(255, 193, 7, 0.5);
-        min-height: 90px;
+    .machine-screen.farm-screen {
+        background-color: #0d1a2f; /* Fundo azul escuro */
+        color: #ffffff; 
+        border: 2px solid #4CAF50; /* Borda verde */
+        box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        min-height: 80px;
+        padding: 15px;
+        border-radius: 8px;
     }
     .machine-screen p {
-        font-size: 1rem;
-        text-shadow: 0 0 5px #FFC107;
+        font-size: 1.1rem;
+        text-shadow: none;
+        color: #FFC300; /* Dourado/Amarelo para mensagem */
+        font-weight: 600;
     }
 
-    /* Corpo da Máquina (Onde fica o botão) */
-    .machine-body.refinery-body {
+    /* Corpo da Máquina e Luzes */
+    .machine-body.farm-body {
         padding: 20px 0 10px 0;
+        text-align: center;
     }
 
-    /* Luzes de Refinaria (Painel de Controle) */
-    .machine-light-container.refinery-lights {
-        margin-bottom: 30px;
-        background-color: #222;
+    /* Luzes de Status */
+    .machine-light-container.farm-lights {
+        margin-bottom: 25px;
+        background-color: #e0e0e0; /* Cinza claro */
         border-radius: 5px;
         padding: 10px 20px;
-        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.9);
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: center;
+        gap: 15px;
     }
     .machine-light {
-        width: 20px;
-        height: 20px;
-        border: 2px solid #555;
-        background-color: #111; /* Cor padrão (apagada) */
-        box-shadow: none;
-        animation: none; /* Remove a animação padrão */
-        opacity: 1;
+        /* Mantém as classes e animações de luzes */
+        /* Cores: Vermelho=Pronto, Amarelo=Alimentando, Verde=Concluído */
     }
 
-    /* Estados das Luzes */
-    .machine-light.active, .machine-light.blinking {
-        border: 2px solid #fff;
-    }
-
-    /* Vermelha: Pronto para Iniciar/Erro */
-    .machine-light.red-light.active, .machine-light.red-light.blinking {
-        background-color: #D32F2F;
-        box-shadow: 0 0 12px #D32F2F;
-    }
-    
-    /* Amarela: Processando */
-    .machine-light.yellow-light.active, .machine-light.yellow-light.blinking {
-        background-color: #FFC107;
-        box-shadow: 0 0 12px #FFC107;
-    }
-    
-    /* Verde: Concluído */
-    .machine-light.green-light.active, .machine-light.green-light.blinking {
-        background-color: #4CAF50;
-        box-shadow: 0 0 12px #4CAF50;
-    }
-    
-    /* Animação de Piscar Otimizada */
-    @keyframes blinking {
-        0% { opacity: 0.2; }
-        100% { opacity: 1; }
-    }
-    .machine-light.blinking {
-        animation: blinking 0.8s infinite alternate;
-    }
-    
-    /* Botão Válvula de Refinaria */
-    .work-button.refinery-valve-button {
-        background-color: #E65100; /* Laranja Escuro (Óleo/Fogo) */
-        background-image: linear-gradient(to top, #E65100, #FF9800);
+    /* Botão ALIMENTAR */
+    .work-button.feed-button {
+        background-color: #4CAF50; /* Verde da Fazenda */
+        background-image: linear-gradient(to top, #4CAF50, #81C784);
         color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 5px 0 #BF360C, 0 0 15px rgba(255, 152, 0, 0.5);
-        transform: scale(0.95);
-        margin-bottom: 10px;
+        font-size: 1.4rem;
+        padding: 12px 25px;
+        border-radius: 50px; /* Mais arredondado */
+        box-shadow: 0 6px 0 #388E3C, 0 0 15px rgba(76, 175, 80, 0.5);
+        transition: all 0.1s;
     }
-    .work-button.refinery-valve-button:active {
-        transform: translateY(3px) scale(0.95);
-        box-shadow: 0 2px 0 #BF360C;
+    .work-button.feed-button:active {
+        transform: translateY(4px);
+        box-shadow: 0 2px 0 #388E3C;
     }
-    .work-button.refinery-valve-button:disabled {
-        background-color: #555 !important;
+    .work-button.feed-button:disabled {
+        background-color: #a5d6a7 !important;
         background-image: none !important;
-        box-shadow: 0 5px 0 #333 !important;
-        color: #bbb;
+        box-shadow: 0 6px 0 #7cb342 !important;
+        color: #fff;
     }
-
-    /* Informações de Nível (Ajustadas para o novo tema) */
+    
+    /* REMOÇÃO DA SEÇÃO INFERIOR DE INFORMAÇÕES */
     .tasks-info {
-        background-color: #1a3250; /* Cor azul marinho mais clara */
-        border: 1px solid #87CEEB;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+        display: none; /* Remove a exibição da seção de nível/tarefas restantes */
     }
-    .tasks-info strong {
-        color: #4CAF50; /* Cor verde para destacar o status */
+    
+    /* Estilos genéricos (mantidos se estiverem em um arquivo separado) */
+    .work-button {
+        width: 80%;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        text-transform: uppercase;
     }
-
-    /* Resetando estilos antigos não utilizados: */
-    .machine-dial { display: none; }
+    
 </style>
 {% endblock %}

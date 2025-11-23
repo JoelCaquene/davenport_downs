@@ -4,179 +4,242 @@
 {% block title %}Menu{% endblock %}
 
 {% block content %}
+<div class="main-content-container">
 
-<div id="welcomePopup" class="popup-overlay">
-    <div class="popup-content">
-        <div class="popup-header">
-            <img src="{% static 'images/popup_welcome_image.jpg' %}" alt="Bem-vindo à Saudi Aramco" class="popup-image">
-        </div>
-        <div class="popup-body">
-            <h2 class="popup-title">INFORMAÇÕES</h2>
-            <p class="popup-text">
-                **Saudi Aramco**, é uma das maiores empresas integradas de energia e produtos químicos do mundo, com sede em Dhahran, Arábia Saudita.
-                Atuamos em Seguintes país, Arábia Saudita, Brasil, Portugal, Moçambique, Angola, em forma Virtual. 
-            </p>
-            
-            </p> ✨Taxa de saque✨: 13%; ✨Ganho de convite✨: 11$; ✨Horario de saque✨: 24/24; ✨Duração de saque✨: 0 - 24 horas; ✨Sorteio em todos Domingos✨
-            </p>
+    {# ================================================ #}
+    {# 1. Pop-up de Boas-Vindas (Mantido e Funcional) #}
+    {# ================================================ #}
+    <div id="welcomePopup" class="popup-overlay">
+        <div class="popup-content">
+            <div class="popup-header-custom">
+                <i class="fas fa-bell popup-icon-main"></i>
+                <h2 class="popup-title-custom">📣 Avisos Importantes</h2>
+            </div>
+            <div class="popup-body-custom">
+                
+                {# Informações de Depósito #}
+                <div class="info-card-popup">
+                    <div class="info-icon"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="info-text">
+                        <h3>🏦 Depósito</h3>
+                        <ul>
+                            <li>**Mínimo:** 7000 Kz</li>
+                            <li>**Horário:** 08:30 até 20:00h</li>
+                            <li>**Atenção:** Não aceitamos depósito de bancos diferentes.</li>
+                        </ul>
+                    </div>
+                </div>
 
-            </p>Metódos de deposito e Processamento de saque: Bancos (Agências), Entidade por referências, Visa, Binance.
-            </p>
-            <p class="popup-text disclaimer">
-                FORME A SUA EQUIPA, E GANHE SORTEIO, E $ 581  DE REALIZAR REÚNIÕES OFFLINE E SALÁRIO MENSAL
-            </p>
-            <button id="closePopup" class="popup-close-button">Continuar</button>
+                {# Informações de Equipa #}
+                <div class="info-card-popup">
+                    <div class="info-icon"><i class="fas fa-users"></i></div>
+                    <div class="info-text">
+                        <h3>🤝 Equipa (Ganhos)</h3>
+                        <ul>
+                            <li>**Bónus Depósito:** Ganhas **15%** do depósito do seu subordinado (se tiver Nível Ativo).</li>
+                            <li>**Bónus Tarefa:** Ganhas **100 Kz** por cada tarefa realizada pelo seu subordinado.</li>
+                            <li>**Regra:** Quanto mais subordinados tiveres, mais ganhas.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                {# Informações de Saque #}
+                <div class="info-card-popup">
+                    <div class="info-icon"><i class="fas fa-wallet"></i></div>
+                    <div class="info-text">
+                        <h3>💰 Saque</h3>
+                        <ul>
+                            <li>**Mínimo:** 2500 Kz</li>
+                            <li>**Taxa:** 10%</li>
+                            <li>**Horário:** 09:00 até 17:00h</li>
+                            <li>**Dias:** Segunda a Domingo.</li>
+                            <li>**Duração:** 0 - 24 horas.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+            <button id="closePopup" class="popup-close-button-custom">Continuar e Entender</button>
         </div>
     </div>
-</div>
-<header class="menu-header">
-    <h1 class="platform-name">Saudi Aramco</h1>
-    {% if whatsapp_link %}
-        <a href="{{ whatsapp_link }}" class="support-button">
-            <i class="fa-brands fa-whatsapp"></i> 
-            <span>Apoio</span>
+    
+    {# ================================================ #}
+    {# 2. Header (Nome Atualizado e Botão Rolete da Sorte Giratório) #}
+    {# ================================================ #}
+    <header class="menu-header">
+        <div class="header-content-wrapper">
+            <h1 class="platform-name updated-name">DAVENPORT DOWNS</h1>
+            {% if whatsapp_link %}
+                <a href="{{ whatsapp_link }}" class="support-button">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>Apoio</span>
+                </a>
+            {% endif %}
+        </div>
+        
+        {# NOVO: Botão Roleta da Sorte no Header (No local do X) #}
+        <a href="{% url 'roleta' %}" class="lucky-spin-button" title="Roleta da Sorte">
+            <i class="fa-solid fa-gamepad lucky-spin-icon"></i>
         </a>
-    {% endif %}
-</header>
+    </header>
 
-<div class="image-gallery">
-    <div class="image-slider">
-        <img src="{% static 'images/placeholder_1.jpg' %}" alt="Imagem da Plataforma 1" class="active">
-        <img src="{% static 'images/placeholder_2.jpg' %}" alt="Imagem da Plataforma 2">
+    {# ================================================ #}
+    {# 3. Cartões de Renda (Mantidos - 3 por Linha) #}
+    {# ================================================ #}
+    <div class="income-cards-container">
+        <h2 class="income-cards-title">📊 CONTABILIDADE</h2>
+
+        {# Linha 1: Dados Principais #}
+        <div class="cards-grid">
+            
+            {# Card 1: Saldo Activo #}
+            <div class="small-card card-balance">
+                <i class="fa-solid fa-sack-dollar card-icon"></i>
+                <p class="card-title">Saldo Activo</p>
+                <span class="card-value">KZ {{ user.available_balance|default:"0.00" }}</span>
+            </div>
+
+            {# Card 2: Nível Activo #}
+            <div class="small-card card-level">
+                <i class="fa-solid fa-star card-icon"></i>
+                <p class="card-title">Nível</p>
+                <span class="card-value">{{ active_level.level.name|default:"Nenhum" }}</span>
+            </div>
+
+            {# Card 3: Depósito Activo #}
+            <div class="small-card card-deposit">
+                <i class="fa-solid fa-money-bill-trend-up card-icon"></i>
+                <p class="card-title">Depósito Activo</p>
+                <span class="card-value">KZ {{ approved_deposit_total|default:"0.00" }}</span>
+            </div>
+        </div>
+
+        {# Linha 2: Dados de Renda e Retirada #}
+        <div class="cards-grid">
+            
+            {# Card 4: Renda de Hoje #}
+            <div class="small-card card-daily-income">
+                <i class="fa-solid fa-chart-line card-icon"></i>
+                <p class="card-title">Renda de Hoje</p>
+                <span class="card-value">KZ {{ daily_income|default:"0.00" }}</span>
+            </div>
+            
+            {# Card 5: Ganho de Subsídio #}
+            <div class="small-card card-subsidy">
+                <i class="fa-solid fa-users card-icon"></i>
+                <p class="card-title">Subsídio</p>
+                <span class="card-value">KZ {{ user.subsidy_balance|default:"0.00" }}</span>
+            </div>
+
+            {# Card 6: Total Sacado #}
+            <div class="small-card card-withdrawals">
+                <i class="fa-solid fa-hand-holding-dollar card-icon"></i>
+                <p class="card-title">Total Sacado</p>
+                <span class="card-value">KZ {{ total_withdrawals|default:"0.00" }}</span>
+            </div>
+        </div>
+        
     </div>
+    
+    {# ================================================ #}
+    {# 4. Bloco de Informações (Cards Grandes) #}
+    {# ================================================ #}
+    <div class="info-cards-section">
+        
+        {# Card 1: O que é? (Visão Geral) #}
+        <div class="info-card custom-card-1">
+            <img src="{% static 'images/about_us_icon.png' %}" alt="O que é imagem" class="card-large-image">
+            <div class="card-header">
+                <img src="{% static 'images/about_us_icon.png' %}" alt="O que é ícone" class="card-image-icon-small">
+                <h2>🐮 Davenport Downs: O que é?</h2>
+            </div>
+            <p>
+                **Davenport Downs** é uma das maiores **fazendas de gado** (*cattle station*) do mundo, localizada no **Channel Country** em Queensland, **Austrália**.
+            </p>
+            <p>
+                Cobre cerca de **1,4 milhão de hectares** e é reconhecida pela sua gigantesca escala, mantendo mais de **29.000 cabeças de gado**.
+            </p>
+            <span class="card-tag">Maior Fazenda de Gado da Austrália</span>
+        </div>
+        
+        {# Card 2: Qual é o Objetivo? #}
+        <div class="info-card custom-card-2">
+            <img src="{% static 'images/goal_icon.png' %}" alt="Objetivo imagem" class="card-large-image">
+            <div class="card-header">
+                <img src="{% static 'images/goal_icon.png' %}" alt="Objetivo ícone" class="card-image-icon-small">
+                <h2>🎯 Qual é o Objetivo?</h2>
+            </div>
+            <ul>
+                <li>O principal foco é a **eficiência pecuária** e a produção de **carne de alta qualidade**.</li>
+                <li>Implementação de tecnologias avançadas para **sustentabilidade** e manejo otimizado de pastagens.</li>
+                <li>Inclui a geração de receita via **Agroturismo** e preservação ambiental.</li>
+            </ul>
+            <span class="card-tag">Tecnologia e Sustentabilidade</span>
+        </div>
+        
+        {# Card 3: Quais são as Conquistas? #}
+        <div class="info-card custom-card-3">
+            <img src="{% static 'images/achievement_icon.png' %}" alt="Conquistas imagem" class="card-large-image">
+            <div class="card-header">
+                <img src="{% static 'images/achievement_icon.png' %}" alt="Conquistas ícone" class="card-image-icon-small">
+                <h2>🏅 Conquistas Chave</h2>
+            </div>
+            <ul>
+                <li>**Relevância Global:** Consolidada como uma das operações pecuárias mais eficientes do mundo.</li>
+                <li>**Conservação:** Modelo de manejo regenerativo e proteção da fauna (Ex: Bilbies).</li>
+                <li>**Impacto Social:** Contribuição significativa para a economia regional e **capacitação de indígenas**.</li>
+            </ul>
+            <span class="card-tag">Resiliência e Inovação</span>
+        </div>
+
+    </div>
+    
+    {# NOVO: Imagem da Fazenda/Vaca (Transferida para o fim do conteúdo principal) #}
+    <div class="farm-image-container">
+        <img src="{% static 'images/farm_main.png' %}" alt="Imagem da Fazenda Davenport Downs com vacas" class="farm-main-image">
+    </div>
+    
 </div>
 
-<div class="buttons-grid">
-    <a href="{% url 'deposito' %}" class="grid-item">
-        <div class="icon-container">
-            <img src="{% static 'icons/deposito.png' %}" alt="Depósito">
-        </div>
+{# ================================================ #}
+{# 5. Barra de Navegação Inferior (Fixed Footer) #}
+{# ================================================ #}
+<nav class="footer-nav">
+    {# Depósito #}
+    <a href="{% url 'deposito' %}" class="footer-item">
+        <i class="fa-solid fa-money-bill-transfer"></i>
         <span>Depósito</span>
     </a>
-    <a href="{% url 'saque' %}" class="grid-item">
-        <div class="icon-container">
-            <img src="{% static 'icons/saque.png' %}" alt="Saque">
-        </div>
+    {# Saque #}
+    <a href="{% url 'saque' %}" class="footer-item">
+        <i class="fa-solid fa-piggy-bank"></i>
         <span>Saque</span>
     </a>
-    <a href="{% url 'tarefa' %}" class="grid-item">
-        <div class="icon-container">
-            <img src="{% static 'icons/tarefa.png' %}" alt="Tarefa">
-        </div>
+    {# Tarefa #}
+    <a href="{% url 'tarefa' %}" class="footer-item">
+        <i class="fa-solid fa-list-check"></i>
         <span>Tarefa</span>
     </a>
-    
-    {# Substituição de 'Sobre' por 'Perfil' (Quarta e última posição da grade) #}
-    <a href="{% url 'perfil' %}" class="grid-item">
-        <div class="icon-container">
-            <img src="{% static 'icons/perfil.png' %}" alt="Perfil"> 
-        </div>
-        <span>Perfil</span>
+    {# NOVO: Roleta da Sorte #}
+    <a href="{% url 'roleta' %}" class="footer-item">
+        <i class="fa-solid fa-gamepad"></i>
+        <span>Roleta</span>
     </a>
-    
-    {# OS OUTROS BOTÕES FORAM REMOVIDOS PARA MANTER APENAS 4 NA GRADE #}
-</div>
-
-{# Bloco de texto traduzido e imagens em formato banner (100% largura) #}
-<div class="vip-section custom-section">
-    <div class="content-block">
-        
-        {# PRIMEIRA SUB-SEÇÃO: Quem somos? #}
-        <div class="sub-section">
-            <div class="full-width-image-container">
-                <img src="{% static 'images/about_us_icon.png' %}" alt="Quem somos? Imagem principal" class="full-width-image"> 
-            </div>
-            
-            <div class="header">
-                <h2>Quem somos?</h2>
-            </div>
-            <p>
-                A Saudi Aramco (formalmente Saudi Arabian Oil Company) é a empresa estatal de petróleo e gás natural da Arábia Saudita.
-            </p>
-            <p>
-                É uma das maiores companhias integradas de energia e produtos químicos do mundo, com sede em Dhahran, Arábia Saudita.
-            </p>
-            <p>
-                Opera a maior rede mundial de hidrocarbonetos (o Master Gas System) e tem um papel central no fornecimento de energia global há mais de 90 anos.
-            </p>
-            <p>
-                É historicamente reconhecida por ter uma das maiores reservas de petróleo e uma das maiores produções de petróleo cru do mundo.
-            </p>
-            <p class="summary">
-            </p>
-        </div>
-        
-        {# SEGUNDA SUB-SEÇÃO: Objetivo? #}
-        <div class="sub-section">
-             <div class="full-width-image-container">
-                <img src="{% static 'images/goal_icon.png' %}" alt="Objetivo? Imagem principal" class="full-width-image"> 
-            </div>
-            <div class="header">
-                <h2>Objetivo?</h2>
-            </div>
-            <p>
-                O principal objetivo é fornecer a energia vital para impulsionar o comércio global, as empresas e o progresso em todo o mundo.
-            </p>
-            <p>
-                Maximizar o valor de seus recursos de hidrocarbonetos e, ao mesmo tempo, investir no crescimento e inovar para maior sustentabilidade.
-            </p>
-            <p>
-                Manter sua posição como a maior empresa de petróleo cru do mundo em volume de produção e um dos produtores de menor custo.
-            </p>
-            <p>
-                Diversificar e expandir para as áreas de refino e produtos químicos (Downstream) e investir em iniciativas de baixo carbono e tecnologias como Captura e Armazenamento de Carbono (CCUS) e hidrogênio.
-            </p>
-            <p>
-                Apoiar a economia da Arábia Saudita através de programas que visam a criação de parcerias estratégicas, a expansão econômica e a diversificação.
-            </p>
-        </div>
-        
-        {# TERCEIRA SUB-SEÇÃO: Conquistas? #}
-        <div class="sub-section">
-             <div class="full-width-image-container">
-                <img src="{% static 'images/achievement_icon.png' %}" alt="Conquistas? Imagem principal" class="full-width-image">
-            </div>
-            <div class="header">
-                <h2>Conquistas?</h2>
-            </div>
-            <p>
-                É frequentemente citada como a empresa de capital aberto de maior valor do mundo, com valor de mercado na casa dos trilhões de dólares.
-            </p>
-            <p>
-                Detém o Campo de Safaniya, o maior campo de petróleo offshore do mundo.
-            </p>
-            <p>
-                Desenvolveu e utiliza tecnologias avançadas para exploração e extração, como o simulador de reservatórios (POWERS) em 1997.
-            </p>
-            <p>
-                Realiza grandes investimentos globais, como ser a única proprietária da maior refinaria de petróleo bruto em um único local na América do Norte (Port Arthur, Texas).
-            </p>
-        </div>
-
-    </div>
-</div>
-
+    {# Perfil #}
+    <a href="{% url 'perfil' %}" class="footer-item">
+        <i class="fa-solid fa-user-astronaut"></i>
+        <span>Meu</span>
+    </a>
+</nav>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Lógica do Slider
-        const images = document.querySelectorAll('.image-slider img');
-        let currentImage = 0;
-
-        if (images.length > 1) {
-            setInterval(() => {
-                images[currentImage].classList.remove('active');
-                currentImage = (currentImage + 1) % images.length;
-                images[currentImage].classList.add('active');
-            }, 3000);
-        }
-
-        // Lógica do Pop-up de Boas-Vindas
+        // Lógica do Pop-up de Boas-Vindas (Mantida)
         const popup = document.getElementById('welcomePopup');
         const closeButton = document.getElementById('closePopup');
 
         // Exibe o pop-up a cada carregamento da página.
-        popup.style.display = 'flex'; 
+        popup.style.display = 'flex';
 
         // Adiciona evento para fechar
         closeButton.addEventListener('click', () => {
@@ -193,201 +256,431 @@
 </script>
 
 <style>
-    /* Estilos do Pop-up de Boas-Vindas (MANTIDOS) */
+    /* ================================================
+    ESTILOS GLOBAIS - TEMA BRANCO
+    ================================================ */
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding-bottom: 60px; /* Espaço para o footer fixo */
+        font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+        background-color: #f7f9fc !important;
+        color: #333 !important;
+    }
+
+    .main-content-container {
+        padding-bottom: 15px; /* Pequeno padding para o final do conteúdo */
+        margin-bottom: 0;
+    }
+
+    /* ================================================
+    ESTILOS DO HEADER
+    ================================================ */
+    .menu-header {
+        background-color: #ffffff;
+        color: #0d1a2f;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 10px 15px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .header-content-wrapper {
+        display: flex;
+        align-items: center;
+        flex-grow: 1; /* Permite que o wrapper ocupe o espaço necessário */
+        justify-content: space-between;
+    }
+
+    .platform-name.updated-name {
+        font-family: 'Times New Roman', serif;
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #0d1a2f;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        margin-right: 10px;
+    }
+
+    .support-button {
+        color: #ffffff;
+        background-color: #4CAF50;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        text-decoration: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-weight: 600;
+        flex-shrink: 0; /* Não permite encolher */
+    }
+
+    /* NOVO: Botão Giratório da Roleta da Sorte no Header */
+    .lucky-spin-button {
+        background-color: #FFC300; /* Destaque amarelo para chamar atenção */
+        border: 2px solid #FF5733; /* Borda laranja/vermelha */
+        border-radius: 50%; /* Torna-o redondo */
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 0 10px rgba(255, 195, 0, 0.7);
+        flex-shrink: 0;
+        margin-left: 15px; /* Espaço entre o botão de Apoio e a Roleta */
+        text-decoration: none;
+    }
+    
+    .lucky-spin-icon {
+        color: #0d1a2f;
+        font-size: 1.5rem;
+        /* Animação de rotação */
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    /* FIM: Botão Roleta da Sorte */
+
+    /* ================================================
+    ESTILOS POP-UP (Mantido)
+    ================================================ */
+    /* ... (Estilos do Pop-up mantidos) ... */
     .popup-overlay {
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        display: none; 
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        padding: 20px;
-        box-sizing: border-box;
     }
 
     .popup-content {
-        background-color: #0d1a2f; 
-        color: #fff;
-        width: 90%; 
-        max-width: 400px; 
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.9);
+        background-color: #ffffff;
+        color: #333;
+        width: 90%;
+        max-width: 380px;
+        height: 80vh;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
-        border: 2px solid #87CEEB; 
+        border: 4px solid #4CAF50;
     }
 
-    .popup-header {
-        position: relative;
-        height: 100px;
-        background-color: #1a1a4d;
-    }
-
-    .popup-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .popup-body {
+    .popup-body-custom {
         padding: 15px;
-        text-align: center;
+        overflow-y: auto;
+        flex-grow: 1;
     }
 
-    .popup-title {
-        font-size: 1.1rem;
-        color: #4CAF50; 
-        margin-top: 0;
-        margin-bottom: 10px;
-    }
-
-    .popup-text {
-        font-size: 0.85rem;
-        margin-bottom: 10px;
-        line-height: 1.4;
-        text-align: left;
-    }
-
-    .popup-text.commitment {
-        color: #87CEEB; 
-        font-weight: bold;
-    }
-    .popup-text.disclaimer {
-        font-size: 0.75rem;
-        color: #ccc;
-    }
-
-    .popup-close-button {
+    .popup-header-custom {
         background-color: #4CAF50;
         color: white;
-        border: none;
-        padding: 10px 20px;
+        padding: 15px;
         text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin-top: 15px;
+        border-radius: 8px 8px 0 0;
+        flex-shrink: 0;
+    }
+    
+    .popup-close-button-custom {
+        background-color: #0d1a2f;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 1rem;
         cursor: pointer;
-        border-radius: 5px;
-        width: 100%;
         transition: background-color 0.3s;
+        flex-shrink: 0;
     }
-
-    .popup-close-button:hover {
-        background-color: #45a049;
-    }
-
-    /* Estilos para o Grid de Botões (MENU) - AJUSTADO PARA 4 COLUNAS */
-    .buttons-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr); /* Mantido em 4 colunas */
-        gap: 10px;
+    
+    /* Estilos dos Cards de Informação no Pop-up (Mantido) */
+    .info-card-popup {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
         padding: 10px;
-        margin: 15px 0;
-        background-color: transparent;
+        border-radius: 8px;
+        background-color: #f0f0f0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .grid-item {
+    .info-icon {
+        color: #0d1a2f;
+        font-size: 1.5rem;
+        margin-right: 10px;
+        padding-top: 5px;
+    }
+
+    .info-text h3 {
+        margin: 0 0 5px 0;
+        font-size: 1rem;
+        color: #4CAF50;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 3px;
+    }
+    
+    .info-text ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 0.85rem;
+    }
+    
+    .info-text li {
+        margin-bottom: 3px;
+        color: #555;
+    }
+
+
+    /* ================================================
+    ESTILOS DOS NOVOS CARTÕES DE RENDA (Mantidos)
+    ================================================ */
+    .income-cards-container {
+        padding: 15px;
+    }
+    
+    .income-cards-title {
+        font-size: 1.3rem;
+        color: #0d1a2f;
+        border-bottom: 3px solid #ccc;
+        padding-bottom: 8px;
+        margin-bottom: 15px;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    .cards-grid {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .small-card {
+        flex: 1 1 calc(33.33% - 8px);
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        border-bottom: 3px solid #4CAF50;
+    }
+
+    .card-icon {
+        font-size: 1.5rem;
+        color: #0d1a2f;
+        margin-bottom: 5px;
+    }
+
+    .card-title {
+        font-size: 0.75rem;
+        color: #888;
+        margin: 0 0 3px 0;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .card-value {
+        font-size: 0.9rem;
+        font-weight: 800;
+        color: #4CAF50;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Cores de destaque personalizadas */
+    .card-balance .card-value { color: #0d1a2f; }
+    .card-level .card-value { color: #FFC300; }
+    .card-daily-income .card-value { color: #34A853; }
+    .card-withdrawals .card-value { color: #EA4335; }
+    
+    /* REMOVIDO: Estilos do .action-button-main */
+    .action-button-main {
+        display: none !important;
+    }
+
+    /* ================================================
+    ESTILOS DO BLOCO DE INFORMAÇÕES (Cards Grandes)
+    ================================================ */
+    .info-cards-section {
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .info-card {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 0 15px 15px 15px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-left: 5px solid;
+    }
+
+    .info-card .card-large-image {
+        width: calc(100% + 30px);
+        height: 200px;
+        object-fit: cover;
+        margin: 0 -15px 15px -15px;
+        border-radius: 12px 12px 0 0;
+    }
+    
+    .card-image-icon-small {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    }
+    
+    .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-top: 5px;
+    }
+    
+    .info-card h2 {
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 700;
+        color: #0d1a2f;
+    }
+    
+    .info-card p, .info-card li {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #555;
+        margin-bottom: 8px;
+    }
+    
+    .info-card ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    .info-card ul li:before {
+        content: "•";
+        color: #4CAF50;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -1em;
+    }
+    
+    .card-tag {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 3px 8px;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #fff;
+    }
+    
+    /* Cores personalizadas para cada Card */
+    .custom-card-1 { border-left-color: #87CEEB; }
+    .custom-card-1 .card-tag { background-color: #87CEEB; }
+
+    .custom-card-2 { border-left-color: #4CAF50; }
+    .custom-card-2 .card-tag { background-color: #4CAF50; }
+    .custom-card-2 h2 { color: #4CAF50; }
+
+    .custom-card-3 { border-left-color: #FFC300; }
+    .custom-card-3 .card-tag { background-color: #FFC300; }
+    .custom-card-3 h2 { color: #FFC300; }
+    
+    /* NOVO: Estilos da Imagem da Fazenda/Vaca */
+    .farm-image-container {
+        padding: 0 15px 15px 15px;
+    }
+
+    .farm-main-image {
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    /* FIM: Estilos da Imagem da Fazenda/Vaca */
+
+
+    /* ================================================
+    ESTILOS DA BARRA DE NAVEGAÇÃO INFERIOR (Fixed Footer)
+    ================================================ */
+    .footer-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background-color: #ffffff;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 100;
+    }
+
+    .footer-item {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        text-align: center;
         text-decoration: none;
-        color: #fff;
+        color: #555;
         padding: 5px;
-        border-radius: 8px;
-        transition: background-color 0.3s, transform 0.1s;
-        background-color: rgba(255, 255, 255, 0.05);
-        border: none;
+        transition: color 0.3s, transform 0.1s;
+        flex-grow: 1;
     }
 
-    .grid-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+    .footer-item i {
+        font-size: 1.4rem;
+        margin-bottom: 2px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Destaque para Depósito */
+    .footer-item[href*="deposito"] i {
+        color: #4CAF50; 
+    }
+    
+    /* Destaque para Roleta da Sorte */
+    .footer-item[href*="roleta"] i {
+        color: #FFC300; 
+    }
+
+
+    .footer-item span {
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .footer-item:hover, .footer-item.active {
+        color: #4CAF50;
         transform: scale(1.05);
     }
-
-    .icon-container img {
-        width: 35px;
-        height: 35px;
-        margin-bottom: 5px;
-        filter: drop-shadow(0 0 3px rgba(0, 255, 255, 0.8));
-    }
-
-    .grid-item span {
-        font-size: 0.75rem;
-        font-weight: 500;
-        word-break: break-word;
-    }
-
-
-    /* ESTILOS PARA O BLOCO DE TEXTO */
-    .custom-section {
-        text-align: left;
-        margin-top: 20px;
-        padding: 15px;
-        background-color: #1a1a4d;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-        font-family: 'Arial', sans-serif; 
-        direction: ltr;
-    }
     
-    .sub-section {
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
-    }
-    
-    /* ESTILOS DA IMAGEM EM TELA CHEIA (MANTIDOS E AJUSTADOS O NOME DA CLASSE) */
-    .full-width-image-container {
-        margin-bottom: 15px;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    }
-    
-    .full-width-image {
-        width: 100%; 
-        height: 150px; 
-        object-fit: cover; 
-        display: block;
-    }
-    
-    .header {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        margin-bottom: 10px;
-        color: #87CEEB; 
-    }
-
-    .header h2 {
-        font-size: 1.4rem;
-        margin: 0;
-    }
-    
-    .sub-section p {
-        font-size: 0.9rem;
-        color: #ccc;
-        margin-bottom: 8px;
-        line-height: 1.6;
-        text-align: justify;
-    }
-
-    .summary {
-        font-weight: bold;
-        color: #4CAF50 !important; 
-        margin-top: 15px !important;
-        text-align: left !important;
-    }
-
-    /* REMOÇÃO DO RODAPÉ (MANTIDO) */
-    footer, nav.footer-menu { 
-        display: none !important; 
+    /* Oculta o footer Django padrão */
+    footer {
+        display: none !important;
     }
 </style>
 {% endblock %}

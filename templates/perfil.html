@@ -1,15 +1,11 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Perfil{% endblock %}
+{% block title %}Meu Perfil{% endblock %}
 
 {% block content %}
 <div class="page-container">
     <div class="page-header">
-        <a href="{% url 'menu' %}" class="back-button">
-            <i class="fas fa-arrow-left"></i> 
-            <span>Voltar ao Menu</span>
-        </a>
         <h1>Meu Perfil</h1>
     </div>
 
@@ -21,41 +17,40 @@
         </ul>
     {% endif %}
     
+    {# Exibir apenas o Número de Telefone no topo, acima dos botões de acesso #}
+    <div class="top-info-phone">
+        <span class="label">Número de Telefone:</span>
+        <span class="value">{{ user.phone_number }}</span>
+    </div>
+    
     {# NOVO BLOCO: Botões de Acesso Rápido - Vertical e Personalizado #}
     <div class="vertical-access-buttons">
         
-        {# Botão: Informações (Substitui a div profile-tabs original para ser um botão vertical) #}
-        <button class="vertical-button tab-button active" onclick="openTab(event, 'info-tab')">
-            <i class="fas fa-user-circle"></i>
-            <span>Informações Pessoais</span>
-            <i class="fas fa-chevron-right arrow-icon"></i>
-        </button>
-
-        {# Botão: Dados Bancários (Substitui a div profile-tabs original para ser um botão vertical) #}
-        <button class="vertical-button tab-button" onclick="openTab(event, 'bank-tab')">
-            <i class="fas fa-university"></i>
+        {# Botão: Dados Bancários - É um botão/tab, não um link #}
+        <button class="vertical-button tab-button active" onclick="openTab(event, 'bank-tab')">
+            <i class="fas fa-wallet"></i>
             <span>Dados Bancários</span>
             <i class="fas fa-chevron-right arrow-icon"></i>
         </button>
         
-        <a href="{% url 'renda' %}" class="vertical-button">
-            <i class="fas fa-money-bill-wave"></i>
-            <span>Renda</span>
+        {# Botão: Alterar Senha - É um botão/tab, não um link #}
+        <button class="vertical-button tab-button" onclick="openTab(event, 'password-tab')">
+            <i class="fas fa-key"></i>
+            <span>Alterar Senha</span>
             <i class="fas fa-chevron-right arrow-icon"></i>
-        </a>
+        </button>
+        
+        {# Botão: Nível - Link de navegação #}
         <a href="{% url 'nivel' %}" class="vertical-button">
-            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-trophy"></i>
             <span>Nível</span>
             <i class="fas fa-chevron-right arrow-icon"></i>
         </a>
+        
+        {# Botão: Equipa - Link de navegação #}
         <a href="{% url 'equipa' %}" class="vertical-button">
-            <i class="fas fa-users"></i>
+            <i class="fas fa-user-friends"></i>
             <span>Equipa</span>
-            <i class="fas fa-chevron-right arrow-icon"></i>
-        </a>
-        <a href="{% url 'roleta' %}" class="vertical-button">
-            <i class="fas fa-dice-one"></i>
-            <span>Roleta da Sorte</span>
             <i class="fas fa-chevron-right arrow-icon"></i>
         </a>
     </div>
@@ -63,28 +58,10 @@
 
     <div class="profile-container">
         
-        {# Conteúdo da Aba/Botão Informações - AGORA APARECE ABAIXO DO BOTÃO #}
-        <div id="info-tab" class="tab-content active">
-            <div class="info-item">
-                <span class="label">Número de Telefone:</span>
-                <span class="value">{{ user.phone_number }}</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Saldo Activo:</span>
-                <span class="value">$ {{ user.available_balance }}</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Retirada Total:</span>
-                <span class="value">$ {{ user.total_withdrawn }}</span>
-            </div>
-            <div class="info-item">
-                <span class="label">Nível Ativo:</span>
-                <span class="value">Nível {{ user.active_level.name }}</span>
-            </div>
-        </div>
-
-        {# Conteúdo da Aba/Botão Dados Bancários - AGORA APARECE ABAIXO DO BOTÃO #}
-        <div id="bank-tab" class="tab-content">
+        {# A ABA 'info-tab' (Informações da Conta) FOI REMOVIDA CONFORME SOLICITADO. #}
+        
+        {# Conteúdo da Aba/Botão Dados Bancários #}
+        <div id="bank-tab" class="tab-content active">
             <h3>Dados para Saque</h3>
             <form method="post" class="form-style">
                 {% csrf_token %}
@@ -123,9 +100,12 @@
                 </div>
                 <button type="submit" name="update_bank" class="submit-button">Salvar Dados Bancários</button>
             </form>
-            
-            <h3 style="margin-top: 30px;">Alterar Senha</h3>
-            <form method="post" class="form-style" style="margin-top: 20px;">
+        </div>
+        
+        {# CONTEÚDO DA ABA/BOTÃO ALTERAR SENHA #}
+        <div id="password-tab" class="tab-content">
+            <h3>Alterar Senha</h3>
+            <form method="post" class="form-style">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="{{ password_form.old_password.id_for_label }}">Senha Antiga:</label>
@@ -142,10 +122,14 @@
                 <button type="submit" name="change_password" class="submit-button change-password-button">Alterar Senha</button>
             </form>
         </div>
-        
-        <div class="info-item logout-link-container">
-            <a href="{% url 'logout' %}" class="profile-action-button logout-button">Sair</a>
-        </div>
+        {# FIM CONTEÚDO SENHA #}
+    </div>
+    
+    {# BOTÃO SAIR ESTILIZADO FORA DO PROFILE-CONTAINER #}
+    <div class="logout-link-container">
+        <a href="{% url 'logout' %}" class="profile-action-button logout-button">
+            <i class="fas fa-power-off"></i> Sair
+        </a>
     </div>
 </div>
 
@@ -157,130 +141,131 @@
     footer, nav.footer-menu { 
         display: none !important; 
     }
+    
+    /* FUNDO BRANCO - Aplica-se ao corpo da página */
+    body {
+        background-color: #f0f2f5 !important; /* Fundo cinza claro ou branco */
+    }
 
     .page-container {
-        padding: 10px;
+        padding: 15px;
         max-width: 450px; /* Limita largura para melhor visualização móvel */
         margin: 0 auto;
+        background-color: #ffffff; /* Fundo do container principal branco */
+        min-height: 100vh; /* Opcional: para cobrir toda a altura */
     }
     
-    /* ESTILOS DO CABEÇALHO E BOTÃO VOLTAR */
+    /* ESTILOS DO CABEÇALHO */
     .page-header {
         position: relative;
         display: flex;
         align-items: center;
-        /* Altera o justify-content para empurrar o título para o lado */
-        justify-content: flex-start; 
-        background-color: #00004d;
-        padding: 10px;
+        justify-content: center; /* Centraliza o título */
+        background-color: #007bff; /* Cor primária mais atraente */
+        padding: 15px;
         border-radius: 10px;
         margin-bottom: 20px;
         min-height: 50px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     .page-header h1 {
-        color: #4CAF50;
+        color: #fff; /* Título branco */
         margin: 0;
-        /* Adiciona margem à esquerda para não sobrepor o botão de voltar */
-        margin-left: 100px; 
         font-family: 'Arial', sans-serif;
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+        font-weight: 700;
     }
-    .back-button {
-        position: absolute;
-        left: 10px;
-        background-color: #1a3250;
-        color: #fff;
-        text-decoration: none;
-        padding: 8px 10px;
-        border-radius: 5px;
-        font-size: 0.9rem;
-        transition: background-color 0.3s;
+    
+    /* NOVO ESTILO PARA O NÚMERO DE TELEFONE NO TOPO */
+    .top-info-phone {
         display: flex;
-        align-items: center;
-        gap: 5px;
-        z-index: 10; /* Garante que fique acima do título se houver sobreposição */
-    }
-    .back-button:hover {
-        background-color: #2a5585;
-    }
-    .back-button i {
+        justify-content: space-between;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #e9f5ff; /* Fundo azul muito claro */
+        border: 1px solid #cce5ff;
+        border-radius: 8px;
         font-size: 1.1rem;
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .top-info-phone .label {
+        color: #007bff;
+    }
+    .top-info-phone .value {
+        color: #212529;
     }
 
-    /* ESTILOS DOS NOVOS BOTÕES VERTICAIS */
+
+    /* ESTILOS DOS NOVOS BOTÕES VERTICAIS (LINKS DE NAVEGAÇÃO) */
     .vertical-access-buttons {
         display: flex;
         flex-direction: column; /* Organiza em coluna */
-        gap: 8px; /* Espaçamento entre os botões */
+        gap: 10px; /* Espaçamento entre os botões */
         margin-bottom: 20px;
+        padding: 10px;
+        background-color: #ffffff; /* Fundo branco para o bloco de botões */
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     .vertical-button {
         display: flex;
         align-items: center;
-        background-color: #0d1a2f; /* Fundo do botão */
-        border: 1px solid #1a3250;
+        background-color: #f8f9fa; /* Fundo do botão: Cinza muito claro */
+        border: 1px solid #dee2e6;
         padding: 15px;
         border-radius: 8px;
         text-decoration: none;
-        color: #fff;
-        font-weight: bold;
+        color: #343a40; /* Texto escuro */
+        font-weight: 600;
         font-size: 1rem;
         transition: background-color 0.3s, box-shadow 0.3s;
-        width: 100%; /* Ocupa a largura total */
+        width: 100%;
         box-sizing: border-box;
         text-align: left;
         cursor: pointer;
     }
     .vertical-button:hover {
-        background-color: #1a3250;
-        box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+        background-color: #e9ecef;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
     }
     .vertical-button i {
-        font-size: 1.3rem;
+        font-size: 1.4rem;
         margin-right: 15px;
-        color: #87CEEB; /* Cor dos ícones */
+        color: #007bff; /* Cor dos ícones: Azul primário */
     }
     .vertical-button span {
-        flex-grow: 1; /* Faz o span ocupar o máximo de espaço */
+        flex-grow: 1;
     }
     .arrow-icon {
-        color: #4CAF50 !important;
-        font-size: 0.9rem !important;
+        color: #6c757d !important; /* Seta cinza */
+        font-size: 1.1rem !important;
         margin-right: 0 !important;
-    }
-    .vertical-button.tab-button {
-        /* Garante que os botões de Informações e Dados Bancários pareçam iguais */
-        border-bottom: 1px solid #1a3250; 
     }
     /* Estilo para botão de aba ativo */
     .vertical-button.active {
-        background-color: #1a3250;
-        box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
-        color: #4CAF50; /* Destaca o texto do botão ativo */
+        background-color: #007bff;
+        color: #fff; /* Texto branco no botão ativo */
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.5);
+        border-color: #007bff;
     }
     .vertical-button.active i {
-        color: #4CAF50;
+        color: #fff; /* Ícone branco no botão ativo */
     }
 
     /* ESTILOS DO CONTEÚDO OCULTÁVEL (tab-content) */
-    /* Remove a div profile-tabs anterior, pois os botões agora estão na vertical-access-buttons */
-    .profile-tabs {
-        display: none; 
-    }
     .profile-container {
-        /* Ajusta o padding para compensar a remoção do profile-tabs */
-        background-color: #0d1a2f; 
+        background-color: #ffffff; /* Fundo do container de conteúdo branco */
         padding: 20px;
         border-radius: 10px;
-        margin: 20px auto;
-        max-width: 400px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.7); 
-        border: 1px solid #1a3250;
+        margin-top: 20px;
+        max-width: 450px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+        border: 1px solid #dee2e6; /* Borda clara */
     }
     .tab-content {
         display: none;
         padding-top: 10px;
-        border-top: 1px solid #1a3250; /* Linha divisória para separar do botão */
         margin-top: 15px;
     }
     .tab-content.active {
@@ -288,116 +273,117 @@
     }
     /* Adicione um estilo para os títulos dentro das abas */
     .tab-content h3 {
-        color: #4CAF50;
-        border-bottom: 1px dashed #1a3250;
-        padding-bottom: 5px;
-        margin-bottom: 15px;
-        font-size: 1.2rem;
+        color: #007bff; /* Título azul primário */
+        border-bottom: 2px solid #dee2e6;
+        padding-bottom: 8px;
+        margin-bottom: 20px;
+        font-size: 1.4rem;
+        font-weight: 600;
     }
     
-    /* Outros estilos de formulário e info-item mantidos */
-    .info-item {
-        display: flex;
-        justify-content: space-between;
-        padding: 12px 0;
-        border-bottom: 1px solid #1a3250;
-    }
-    .info-item:last-of-type {
-        border-bottom: none;
-    }
-    .label {
-        font-weight: bold;
-        color: #87CEEB;
-        font-family: 'Arial', sans-serif;
-    }
-    .value {
-        color: #fff;
-        font-family: 'Arial', sans-serif;
-    }
-    /* ... (restante dos estilos de form, submit-button, logout mantidos) ... */
-    
+    /* Estilos de Formulário */
     .form-style .form-group {
         margin-bottom: 15px;
     }
     .form-style label {
         display: block;
         margin-bottom: 8px;
-        color: #87CEEB;
+        color: #495057;
         font-family: 'Arial', sans-serif;
+        font-weight: 500;
     }
     .form-style input {
         width: 100%;
         padding: 12px;
-        border: 1px solid #1a3250;
-        background-color: #00004d;
-        color: #fff;
+        border: 1px solid #ced4da;
+        background-color: #f8f9fa; /* Fundo do input cinza claro */
+        color: #212529;
         border-radius: 5px;
         box-sizing: border-box;
         font-size: 1rem;
         transition: border-color 0.3s;
     }
     .form-style input:focus {
-        border-color: #4CAF50;
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
         outline: none;
     }
+
+    /* Estilos de Botão de Submissão */
     .submit-button {
         display: block;
         width: 100%;
-        padding: 12px;
+        padding: 14px;
         text-align: center;
-        margin-top: 15px;
+        margin-top: 20px;
         text-decoration: none;
         color: #fff;
-        border-radius: 5px;
-        transition: background-color 0.3s, transform 0.2s;
+        border-radius: 8px;
+        transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
         cursor: pointer;
         border: none;
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-weight: bold;
-        background-color: #4CAF50;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        background-color: #28a745; /* Cor de sucesso (Verde) */
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.4);
     }
     .submit-button:hover {
-        background-color: #388e3c;
-        transform: translateY(-2px);
+        background-color: #218838;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 12px rgba(40, 167, 69, 0.6);
     }
     .change-password-button {
-        background-color: #007bff;
+        background-color: #ffc107; /* Cor de alerta (Amarelo/Laranja) */
+        color: #343a40;
+        box-shadow: 0 4px 8px rgba(255, 193, 7, 0.4);
     }
     .change-password-button:hover {
-        background-color: #0056b3;
+        background-color: #e0a800;
+        box-shadow: 0 6px 12px rgba(255, 193, 7, 0.6);
     }
+    
+    /* Estilo do Botão Sair - NOVO E ESTILIZADO */
     .logout-link-container {
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #1a3250;
+        margin-top: 30px; /* Mais espaço acima */
+        padding-top: 0;
+        border-top: none;
         text-align: center;
     }
     .logout-button {
-        display: inline-block; /* Garante que o link funcione como um botão de bloco */
-        background-color: #dc3545;
+        display: flex; /* Para alinhar o ícone e o texto */
+        align-items: center;
+        justify-content: center;
+        background-color: #dc3545; /* Cor de perigo (Vermelho) */
         border: none;
         box-shadow: 0 0 10px rgba(220, 53, 69, 0.5); 
         transition: box-shadow 0.4s ease, transform 0.3s ease;
-        padding: 12px 20px;
+        padding: 14px 20px; /* Um pouco maior */
         font-weight: bold;
         text-decoration: none;
         color: #fff;
-        border-radius: 5px;
+        border-radius: 8px;
         width: 100%;
         box-sizing: border-box;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+    .logout-button i {
+        margin-right: 10px; /* Espaço entre o ícone e o texto */
+        font-size: 1.3rem;
     }
     .logout-button:hover {
         background-color: #c82333;
-        box-shadow: 0 0 25px rgba(220, 53, 69, 1); 
-        transform: translateY(-3px); 
+        box-shadow: 0 0 20px rgba(220, 53, 69, 0.8); 
+        transform: translateY(-2px); 
     }
+    
     .errorlist {
-        color: #ff4444;
+        color: #dc3545;
         list-style: none;
         padding: 0;
         margin-top: 5px;
         font-size: 0.9rem;
+        font-weight: 500;
     }
 </style>
 
@@ -405,11 +391,11 @@
     function openTab(evt, tabName) {
         var i, tabContent, tabButtons;
         
-        // 1. Oculta todos os conteúdos de aba E remove a linha divisória (profile-container border)
+        // 1. Oculta todos os conteúdos de aba
         tabContent = document.getElementsByClassName("tab-content");
         for (i = 0; i < tabContent.length; i++) {
             tabContent[i].style.display = "none";
-            document.querySelector('.profile-container').style.borderTop = 'none'; // Esconde a linha
+            tabContent[i].classList.remove("active"); // Adicionado para manter a coerência
         }
         
         // 2. Remove o estilo 'active' de todos os botões verticais
@@ -420,56 +406,58 @@
 
         // 3. Exibe o conteúdo da aba clicada
         const targetTab = document.getElementById(tabName);
-        if (targetTab.style.display === "block") {
-            // Se já estiver aberto, esconde e remove o active do botão (toggle)
-            targetTab.style.display = "none";
-            evt.currentTarget.classList.remove("active");
-            document.querySelector('.profile-container').style.borderTop = 'none';
-            localStorage.removeItem('activeTab');
-        } else {
-            // Caso contrário, mostra o conteúdo e ativa o botão
-            targetTab.style.display = "block";
-            evt.currentTarget.classList.add("active");
-            document.querySelector('.profile-container').style.borderTop = '1px solid #1a3250'; // Mostra a linha
-            localStorage.setItem('activeTab', tabName);
+        if (targetTab) {
+            // Alterna o estado da aba
+            if (targetTab.style.display === "block") {
+                // Se já estiver aberto, esconde
+                targetTab.style.display = "none";
+                evt.currentTarget.classList.remove("active");
+                localStorage.removeItem('activeTab');
+            } else {
+                // Caso contrário, mostra o conteúdo e ativa o botão
+                targetTab.style.display = "block";
+                evt.currentTarget.classList.add("active");
+                targetTab.classList.add("active");
+                localStorage.setItem('activeTab', tabName);
+            }
         }
     }
 
     document.addEventListener("DOMContentLoaded", function() {
         const urlParams = new URLSearchParams(window.location.search);
-        let activeTab = urlParams.get('tab') || localStorage.getItem('activeTab');
+        // O padrão agora é 'bank-tab', já que é a primeira aba restante
+        let activeTab = urlParams.get('tab') || localStorage.getItem('activeTab') || 'bank-tab'; 
 
-        // Se houver erros de formulário, força a abertura da aba de dados bancários
-        const hasFormErrors = document.querySelector('.tab-content .errorlist');
-        if (hasFormErrors) {
+        // Se houver erros de formulário, força a abertura da aba correta
+        const bankErrors = document.querySelector('#bank-tab .errorlist');
+        const passwordErrors = document.querySelector('#password-tab .errorlist');
+        
+        if (bankErrors) {
             activeTab = 'bank-tab';
+        } else if (passwordErrors) {
+            activeTab = 'password-tab';
         }
         
-        // Se houver uma aba ativa para carregar
-        if (activeTab) {
-             // 1. Garante que todos os conteúdos estejam ocultos
-            const allTabContents = document.getElementsByClassName('tab-content');
-            for (let i = 0; i < allTabContents.length; i++) {
-                allTabContents[i].style.display = 'none';
-            }
-            // 2. Garante que todos os botões estejam inativos
-            const allTabButtons = document.getElementsByClassName("tab-button");
-            for (let i = 0; i < allTabButtons.length; i++) {
-                allTabButtons[i].classList.remove('active');
-            }
+        // 1. Garante que todos os conteúdos estejam ocultos
+        const allTabContents = document.getElementsByClassName('tab-content');
+        for (let i = 0; i < allTabContents.length; i++) {
+            allTabContents[i].style.display = 'none';
+            allTabContents[i].classList.remove('active');
+        }
+        // 2. Garante que todos os botões estejam inativos
+        const allTabButtons = document.getElementsByClassName("tab-button");
+        for (let i = 0; i < allTabButtons.length; i++) {
+            allTabButtons[i].classList.remove('active');
+        }
 
-            // 3. Ativa o botão e mostra a aba
-            const tabToOpen = document.getElementById(activeTab);
-            const activeTabButton = document.querySelector(`.tab-button[onclick*="'${activeTab}'"]`);
-            
-            if (tabToOpen && activeTabButton) {
-                tabToOpen.style.display = 'block';
-                activeTabButton.classList.add('active');
-                document.querySelector('.profile-container').style.borderTop = '1px solid #1a3250';
-            } else {
-                // Se não houver aba para abrir, garante que a linha divisória não apareça
-                document.querySelector('.profile-container').style.borderTop = 'none';
-            }
+        // 3. Ativa o botão e mostra a aba
+        const tabToOpen = document.getElementById(activeTab);
+        const activeTabButton = document.querySelector(`.vertical-button.tab-button[onclick*="'${activeTab}'"]`); 
+        
+        if (tabToOpen && activeTabButton) {
+            tabToOpen.style.display = 'block';
+            tabToOpen.classList.add('active');
+            activeTabButton.classList.add('active');
         }
     });
 </script>

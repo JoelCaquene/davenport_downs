@@ -5,16 +5,16 @@
 
 {% block content %}
 <div class="page-header">
-    <h1>Depósito em 3 Etapas</h1>
+    <h1>DEPOSITO</h1>
 </div>
 
 {% if deposit_success %}
     <div class="success-screen">
-        <img src="{% static 'images/success_icon.png' %}" alt="Depósito Enviado" class="success-icon">
+        <i class="fas fa-check-circle success-icon-fa"></i> 
         <h2>Depósito Enviado com Sucesso! 🚀</h2>
-        <p>Aguarde a aprovação. O seu depósito está a ser processado e será confirmado em 5 a 45 minutos.</p>
+        <p>Aguarde a aprovação. O seu depósito está a ser processado e será confirmado em 5 a 30 minutos.</p>
         <p class="horario-info">HORÁRIO DE ATENDIMENTO: 08:00 ATÉ 20:00 (Segunda a Domingo).</p>
-        <a href="{% url 'menu' %}" class="submit-button back-to-menu-button">Voltar ao Menu</a>
+        <a href="{% url 'menu' %}" class="submit-button back-to-menu-button">Menu</a>
     </div>
 {% else %}
     <div class="page-content">
@@ -27,7 +27,7 @@
             <input type="hidden" name="{{ form.amount.name }}" id="id_amount" value="">
             
             <div id="step-1" class="step-container active">
-                <h3>Etapa 1: Selecione o Banco 🏦</h3>
+                <h3>SELECIONE BANCO<i class="fas fa-university"></i></h3>
                 {% if platform_bank_details %}
                     <div class="bank-buttons">
                         {% for bank_detail in platform_bank_details %}
@@ -42,9 +42,9 @@
                             <p><strong>Nome do Titular:</strong> {{ bank_detail.account_holder_name }}</p>
                             <div class="IBAN-group">
                                 <p><strong>IBAN:</strong> <span id="IBAN-{{ forloop.counter }}">{{ bank_detail.IBAN }}</span></p>
-                                <button type="button" class="copy-button" data-iban-id="IBAN-{{ forloop.counter }}">Copiar IBAN</button>
+                                <button type="button" class="copy-button" data-iban-id="IBAN-{{ forloop.counter }}">Copiar IBAN <i class="far fa-copy"></i></button>
                             </div>
-                            <button type="button" class="next-button" data-next-step="2">Próxima Etapa (2/3) ➡️</button>
+                            <button type="button" class="next-button" data-next-step="2">Próxima Etapa (2/3) <i class="fas fa-arrow-right"></i></button>
                         </div>
                     {% endfor %}
                 {% else %}
@@ -53,99 +53,265 @@
             </div>
 
             <div id="step-2" class="step-container" style="display: none;">
-                <h3>Etapa 2: Selecione o Valor do Depósito ✨</h3>
+                <h3>SELECIONE VALOR<i class="fas fa-hand-holding-usd"></i></h3>
                 <p class="step-info">Selecione o valor correspondente ao Nível que você deseja ativar.</p>
                 <div class="amount-buttons">
                     {% for deposit_value in level_deposits_list %}
                         <button type="button" class="amount-button" data-amount="{{ deposit_value }}">
-                            {{ deposit_value }} $
+                            {{ deposit_value }} KZ
                         </button>
                     {% empty %}
                         <p class="error-message">Nenhum valor de depósito de Nível encontrado. Contacte o suporte.</p>
                     {% endfor %}
                 </div>
                 <div class="selected-amount-display" style="display: none;">
-                    <p>Valor Selecionado: <span id="selected-amount-text">0.00</span> $</p>
-                    <button type="button" class="next-button" data-next-step="3" id="btn-step-2-next" disabled>Próxima Etapa (3/3) ➡️</button>
+                    <p>Valor Selecionado: <span id="selected-amount-text">0.00</span> KZ</p>
+                    <button type="button" class="next-button" data-next-step="3" id="btn-step-2-next" disabled>Próxima Etapa (3/3) <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
 
             <div id="step-3" class="step-container" style="display: none;">
-                <h3>Etapa 3: Carregar Comprovativo 📸</h3>
-                <p class="step-info">Carregue o comprovativo da transferência para o valor selecionado de <strong id="final-amount-text">0.00</strong> $.</p>
+                <h3>Carregar Comprovativo<i class="fas fa-upload"></i></h3>
+                <p class="step-info">Carregue o comprovativo da transferência para o valor selecionado de <strong id="final-amount-text">0.00</strong> KZ.</p>
 
                 <div class="form-group">
                     <label for="{{ form.proof_of_payment.id_for_label }}">Comprovativo de Pagamento:</label>
-                    
                     <input type="file" name="{{ form.proof_of_payment.name }}" id="{{ form.proof_of_payment.id_for_label }}" accept="image/*" required>
                     <span id="file-name-display" class="file-name-display">Nenhum arquivo escolhido.</span>
                 </div>
                 <button type="submit" class="submit-button" id="submit-deposit-button" disabled>
-                    Finalizar e Enviar Depósito ✅
+                    Finalizar e Enviar Depósito <i class="fas fa-paper-plane"></i>
                 </button>
-                <button type="button" class="prev-button" data-prev-step="2">Voltar à Etapa 2</button>
+                <button type="button" class="prev-button" data-prev-step="2">Voltar à Etapa 2 <i class="fas fa-arrow-left"></i></button>
             </div>
         </form>
     </div>
 {% endif %}
 
 <style>
-    /* ... (Mantenha seus estilos CSS aqui) ... */
-    /* Estilos Gerais */
-    .page-header, .page-content { background-color: #00004d; padding: 20px; margin: 20px auto; border-radius: 10px; max-width: 600px; }
-    .page-header h1 { color: #4CAF50; text-align: center; margin: 0; }
-    .info-box { background-color: #1a1a4d; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-    .info-box p, .step-info { line-height: 1.5; color: #fff; text-align: center; }
-    .error-message { color: #ff4d4d; text-align: center; font-weight: bold; }
+    /* Estilos Gerais - Fundo Branco e Cores Legíveis */
+    /* ATENÇÃO: Se o 'base.html' tiver um fundo azul, defina 'body { background-color: #f8f9fa; }' no 'base.html' ou aqui. */
+    body {
+        background-color: #f8f9fa; /* Fundo Muito Leve */
+        color: #343a40; /* Texto Escuro para Contraste */
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .page-header, .page-content {
+        background-color: #ffffff; /* Fundo totalmente branco/brilhante para o conteúdo */
+        padding: 25px;
+        margin: 20px auto;
+        border-radius: 12px;
+        max-width: 600px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Sombra suave para profundidade */
+    }
+
+    .page-header h1 {
+        color: #007bff; /* Azul vibrante para o título */
+        text-align: center;
+        margin: 0;
+        font-size: 2.2rem;
+        font-weight: 700;
+    }
+
+    .info-box {
+        background-color: #e9ecef; /* Cinza muito claro (quase branco) para a caixa de informação */
+        padding: 18px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        border: 1px solid #ced4da;
+    }
+
+    .info-box p, .step-info {
+        line-height: 1.6;
+        color: #495057; /* Texto cinza escuro para legibilidade */
+        text-align: center;
+        font-size: 1.05rem;
+    }
+
+    .error-message {
+        color: #dc3545; /* Vermelho padrão para erros */
+        text-align: center;
+        font-weight: bold;
+    }
 
     /* Estilos das Etapas */
-    .step-container h3 { color: #87CEEB; text-align: center; margin-bottom: 20px; border-bottom: 1px solid #1a1a4d; padding-bottom: 10px; }
+    .step-container h3 {
+        color: #007bff; /* Azul vibrante para os títulos das etapas */
+        text-align: center;
+        margin-bottom: 25px;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 15px;
+        font-size: 1.6rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
 
     /* Botões de Banco (Etapa 1) */
-    .bank-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-    .bank-button { background-color: #0d1a2f; color: #fff; border: 2px solid #4CAF50; border-radius: 8px; padding: 12px 20px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s, transform 0.2s; }
-    .bank-button:hover { background-color: #1a1a4d; transform: scale(1.05); }
-    .bank-button.active { background-color: #4CAF50; color: #000; font-weight: bold; border-color: #000; }
+    .bank-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .bank-button {
+        background-color: #f8f9fa; /* Fundo botão: Branco leve */
+        color: #343a40; /* Texto: Escuro */
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        padding: 14px 25px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex: 1;
+        min-width: 120px;
+        max-width: 180px;
+        font-weight: 600;
+    }
+
+    .bank-button:hover {
+        background-color: #e9ecef;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .bank-button.active {
+        background-color: #007bff; /* Azul vibrante (cor de destaque) */
+        color: #ffffff;
+        font-weight: bold;
+        border-color: #007bff;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+    }
     
     /* Detalhes do Banco (Etapa 1) */
-    .bank-details-card { background-color: #1a1a4d; border: 2px solid #87CEEB; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;}
-    .bank-details-card p { color: #ccc; margin: 5px 0; }
-    .IBAN-group { display: flex; align-items: center; justify-content: space-between; margin: 15px 0; padding: 10px; background-color: #0d1a2f; border-radius: 5px; }
-    .IBAN-group p { margin: 0; font-weight: bold; }
-    .copy-button { padding: 5px 10px; background-color: #87CEEB; color: #000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: background-color 0.3s; }
-    .copy-button:hover { background-color: #6aabcb; }
+    .bank-details-card {
+        background-color: #ffffff; 
+        border: 2px solid #007bff; /* Borda azul para destaque */
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .bank-details-card p {
+        color: #343a40;
+        margin: 8px 0;
+    }
+    
+    .IBAN-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 20px 0;
+        padding: 12px;
+        background-color: #f8f9fa; /* Fundo branco leve */
+        border-radius: 8px;
+        border: 1px dashed #ced4da;
+    }
+
+    .IBAN-group p {
+        color: #343a40;
+        font-weight: 600;
+    }
+
+    .copy-button {
+        padding: 8px 15px;
+        background-color: #28a745; /* Verde para Copiar */
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
     
     /* Botões de Valor (Etapa 2) */
-    .amount-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
-    .amount-button { background-color: #0d1a2f; color: #fff; border: 1px solid #87CEEB; border-radius: 5px; padding: 10px 15px; font-size: 1.1rem; cursor: pointer; transition: background-color 0.3s; }
-    .amount-button.active { background-color: #87CEEB; color: #000; font-weight: bold; }
-    .selected-amount-display { text-align: center; margin-top: 20px; padding: 10px; border-top: 1px solid #1a1a4d; }
-    .selected-amount-display p { font-size: 1.2rem; color: #4CAF50; }
+    .amount-button {
+        background-color: #f8f9fa;
+        color: #343a40;
+        border: 1px solid #ced4da;
+    }
+    .amount-button.active {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+
+    .selected-amount-display p {
+        color: #28a745; /* Verde para o valor selecionado */
+        font-weight: bold;
+    }
     
     /* Etapa 3 - Comprovativo */
-    .form-group label { display: block; margin-bottom: 5px; color: #87CEEB; }
-    /* REMOVIDO: .form-group input[type="file"] { ... } para evitar conflito com o campo VISÍVEL */
-    .file-name-display { display: block; margin-top: 5px; color: #ccc; font-size: 0.9rem; }
+    .form-group label {
+        color: #343a40;
+    }
+
+    /* Input File com cores claras */
+    input[type="file"] {
+        border: 1px solid #ced4da;
+        background-color: #f8f9fa;
+        color: #495057;
+    }
+
+    input[type="file"]::file-selector-button {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .file-name-display {
+        color: #6c757d;
+    }
     
     /* Botões de Navegação e Envio */
-    .next-button, .prev-button, .submit-button { padding: 12px; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; transition: background-color 0.3s; margin-top: 15px; width: 100%; }
-    .next-button { background-color: #87CEEB; color: #000; font-weight: bold; }
-    .next-button:hover:not(:disabled) { background-color: #6aabcb; }
-    .prev-button { background-color: #333; color: #fff; }
-    .prev-button:hover { background-color: #555; }
-    .submit-button { background-color: #4CAF50; color: #fff; font-weight: bold; }
-    .submit-button:hover:not(:disabled) { background-color: #388e3c; }
+    .next-button {
+        background-color: #007bff;
+        color: #ffffff;
+    }
+    
+    .prev-button {
+        background-color: #6c757d; /* Cinza escuro para Voltar */
+        color: #ffffff;
+    }
+
+    .submit-button {
+        background-color: #28a745; /* Verde para Enviar */
+        color: #ffffff;
+    }
     
     /* Desabilitados */
-    .next-button:disabled, .submit-button:disabled { background-color: #555 !important; cursor: not-allowed; opacity: 0.6; }
+    .next-button:disabled, .submit-button:disabled {
+        background-color: #adb5bd !important;
+    }
 
     /* Tela de Sucesso */
-    .success-screen { text-align: center; padding: 40px; background-color: #1a1a4d; border-radius: 15px; margin: 40px auto; max-width: 500px; border: 2px solid #4CAF50;}
-    .success-screen h2 { color: #4CAF50; margin-bottom: 15px; }
-    .success-screen p { color: #fff; margin-bottom: 25px; }
-    .success-screen .horario-info { color: #ccc; font-size: 0.9em; }
-    .success-icon { width: 80px; height: 80px; margin-bottom: 20px; }
-    .back-to-menu-button { display: block; margin-top: 30px; }
+    .success-screen {
+        background-color: #ffffff;
+        border: 2px solid #28a745; /* Borda verde */
+    }
+
+    .success-icon-fa {
+        font-size: 5rem;
+        color: #28a745; /* Ícone verde */
+        margin-bottom: 25px;
+    }
+
+    .success-screen h2 {
+        color: #28a745;
+    }
+
+    .success-screen p {
+        color: #495057;
+    }
+
+    .back-to-menu-button {
+        background-color: #007bff;
+    }
 </style>
 
 <script>
@@ -157,7 +323,6 @@
         ];
         let currentStep = 1;
         
-        // Variáveis de estado
         let selectedBankId = null;
         let selectedAmount = null;
 
@@ -165,7 +330,7 @@
             steps.forEach((step, index) => {
                 step.style.display = (index + 1) === currentStep ? 'block' : 'none';
             });
-            window.scrollTo(0, 0); // Rola para o topo ao mudar de etapa
+            window.scrollTo(0, 0); 
         };
 
         // --- Lógica Geral de Navegação ---
@@ -215,9 +380,11 @@
                 const IBANText = document.getElementById(IBANId).innerText;
                 navigator.clipboard.writeText(IBANText)
                     .then(() => {
-                        e.target.innerText = 'Copiado!';
+                        // Altera o texto do botão apenas se a cópia for bem-sucedida
+                        const originalText = 'Copiar IBAN <i class="far fa-copy"></i>';
+                        e.target.innerHTML = 'Copiado! <i class="fas fa-check"></i>'; 
                         setTimeout(() => {
-                            e.target.innerText = 'Copiar IBAN';
+                            e.target.innerHTML = originalText;
                         }, 2000);
                     })
                     .catch(err => {
@@ -242,39 +409,38 @@
                 amountButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
-                // Atualiza a exibição e habilita o botão de próxima etapa
-                // Usando parseFloat e toFixed(2) para garantir o formato monetário
                 selectedAmountText.innerText = parseFloat(selectedAmount).toFixed(2);
                 finalAmountText.innerText = parseFloat(selectedAmount).toFixed(2);
-                document.getElementById('id_amount').value = selectedAmount; // Atualiza campo oculto do Django
+                document.getElementById('id_amount').value = selectedAmount; 
                 
                 selectedAmountDisplay.style.display = 'block';
                 nextButtonStep2.disabled = false;
 
-                // Após selecionar o valor, verifica o estado do comprovativo para a Etapa 3
-                const proofInput = document.getElementById('id_proof_of_payment');
+                const proofInput = document.getElementById('{{ form.proof_of_payment.id_for_label }}');
                 const submitButton = document.getElementById('submit-deposit-button');
+                // Habilita o botão de envio se já houver arquivo e o valor foi selecionado
                 submitButton.disabled = !(proofInput && proofInput.files.length > 0);
             });
         });
 
 
-        // --- Etapa 3: Envio do Comprovativo (CORRIGIDO) ---
-        // A chave é usar o ID gerado pelo Django para o campo VISÍVEL: id="{{ form.proof_of_payment.id_for_label }}"
+        // --- Etapa 3: Envio do Comprovativo ---
         const proofInput = document.getElementById('{{ form.proof_of_payment.id_for_label }}');
         const fileNameDisplay = document.getElementById('file-name-display');
         const submitButton = document.getElementById('submit-deposit-button');
 
-        // VERIFICAÇÃO INICIAL: O campo de upload deve existir
         if (proofInput) {
             proofInput.addEventListener('change', () => {
-                if (proofInput.files.length > 0) {
+                const isFileSelected = proofInput.files.length > 0;
+                
+                if (isFileSelected) {
                     fileNameDisplay.innerText = proofInput.files[0].name;
-                    submitButton.disabled = false; // Habilita o botão de envio
                 } else {
                     fileNameDisplay.innerText = 'Nenhum arquivo escolhido.';
-                    submitButton.disabled = true; // Desabilita se nenhum arquivo
                 }
+                
+                // Habilita se o arquivo foi selecionado E o valor foi previamente selecionado na etapa 2
+                submitButton.disabled = !(isFileSelected && selectedAmount !== null); 
             });
         }
         

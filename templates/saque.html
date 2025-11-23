@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Saque Personalizado{% endblock %}
+{% block title %}Levantamento de Salário{% endblock %}
 
 {% block content %}
-<div class="page-header-custom">
-    <h1>💸 ÁREA DE LEVANTAMENTO 💸</h1>
+<div class="page-header-custom-white">
+    <h1><i class="fas fa-wallet"></i> SEU SALÁRIO</h1>
 </div>
 
-<div class="saque-container-custom">
+<div class="saque-container-custom-white">
     {# Área de Mensagens Django #}
     {% if messages %}
         <ul class="messages-custom">
@@ -18,213 +18,303 @@
         </ul>
     {% endif %}
 
-    {# Estrutura de Abas (Tabs) #}
-    <div class="tabs-navigation">
+    {# O content-wrapper-saque é removido ou simplificado, pois o layout não será mais em duas colunas fixas #}
+    
+    {# ESTRUTURA DE ABAS HORIZONTAL/EMPILHADA (1) #}
+    <div class="tabs-navigation-standard">
         <button class="tab-button active" onclick="openTab(event, 'informacoes')">
-            <i class="fas fa-info-circle"></i> Informações
+            <i class="fas fa-info-circle icon-saque"></i> 
+            <span>Informações</span>
         </button>
         <button class="tab-button" onclick="openTab(event, 'realizar-saque')">
-            <i class="fas fa-money-check-alt"></i> Realizar Saque
+            <i class="fas fa-coins icon-saque"></i> 
+            <span>Realizar Saque</span>
         </button>
         <button class="tab-button" onclick="openTab(event, 'historico')">
-            <i class="fas fa-history"></i> Histórico
+            <i class="fas fa-scroll icon-saque"></i> 
+            <span>Histórico</span>
         </button>
     </div>
 
-    <div class="tabs-content">
-        {# 1º Separador: Informações Importantes (Exemplo: 1 seprado onde vai aparecer as informações quando é clicado) #}
+    {# CONTEÚDO DAS ABAS (2) #}
+    <div class="tabs-content-standard">
+        
+        {# 1º Separador: Informações Importantes #}
         <div id="informacoes" class="tab-pane active">
-            <div class="info-box-custom">
-                <h3>Regras de Levantamento</h3>
-                <p><i class="fas fa-clock"></i> Saque 24/24h</p>
-                <p><i class="fas fa-dollar-sign"></i> Saque mínimo: 14 $</p>
-                <p><i class="fas fa-percent"></i> Imposto de Transacção: 13%</p>
-                <p><i class="fas fa-hourglass-half"></i> **Processamento de saque:** 0 - 24h</p>
-                <p><i class="fas fa-globe"></i> Faça Alevantamento em R$, e receba na sua moeda local</p>
+            <h3><i class="fas fa-clipboard-list"></i> Regras e Instruções</h3>
+            
+            {# Informações de Saque (Mantendo a lógica, mas com novo estilo e ícones) #}
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="far fa-clock"></i>
+                    <p>Horário de Saque:</p>
+                    <span>{% if is_time_to_withdraw %}09:00h - 17:00h (ON){% else %}09:00h - 17:00h (OFF){% endif %}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <p>Saque Mínimo:</p>
+                    <span>{{ MIN_WITHDRAWAL_AMOUNT|default:"2500" }} KZ</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-percentage"></i>
+                    <p>Imposto de Transacção:</p>
+                    <span>13%</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-history"></i>
+                    <p>Processamento:</p>
+                    <span>0 - 24h (Rápido)</span>
+                </div>
             </div>
-            <div class="alert-box warning">
-                <p><i class="fas fa-exclamation-triangle"></i> **ATENÇÃO:** Verifique as regras e os seus dados de pagamento antes de confirmar.</p>
+            
+            {# Mensagem de Alerta #}
+            <div class="alert-box warning-custom">
+                <i class="fas fa-exclamation-triangle"></i> 
+                <p>**ATENÇÃO:** Certifique-se de que as suas **coordenadas bancárias** estão preenchidas e corretas no seu Perfil para evitar atrasos.</p>
             </div>
         </div>
 
-        {# 2º Separador: Área para Digitar Valor de Saque (Exemplo: 2 separador, onde vai aparecer apenas local para digitar valor de saque) #}
+        {# 2º Separador: Área para Digitar Valor de Saque #}
         <div id="realizar-saque" class="tab-pane">
+            <h3><i class="fas fa-hand-holding-usd"></i> Solicitar Levantamento</h3>
+            
+            {% if not has_bank_details %}
+                <div class="alert-box error-custom">
+                    <i class="fas fa-exclamation-circle"></i> 
+                    <p>É **OBRIGATÓRIO** adicionar suas coordenadas bancárias no <a href="{% url 'perfil' %}">Perfil</a> antes de solicitar um saque.</p>
+                </div>
+            {% endif %}
+            
             <form method="post" class="saque-form-custom">
                 {% csrf_token %}
-                <div class="form-group-custom">
-                    <label for="{{ form.amount.id_for_label }}"><i class="fas fa-calculator"></i> Valor a Sacar ($):</label>
-                    {# Campo do formulário Django (Lógica mantida) #}
+                <div class="form-group-custom-white">
+                    <label for="{{ form.amount.id_for_label }}"><i class="fas fa-calculator"></i> Valor a Sacar (KZ):</label>
                     {{ form.amount }} 
+                    <small>Saldo Disponível: **{{ request.user.available_balance|default:"0.00" }} KZ**</small>
                 </div>
-                <button type="submit" class="saque-button-custom">
+                
+                <button type="submit" class="saque-button-custom-green" {% if not has_bank_details %}disabled{% endif %}>
                     <i class="fas fa-paper-plane"></i> CONFIRMAR SAQUE
                 </button>
             </form>
         </div>
 
-        {# 3º Separador: Histórico de Saques (Exemplo: 3 separado onde vai aparecer historico de saque, aprova, petende, e rejeitado) #}
+        {# 3º Separador: Histórico de Saques #}
         <div id="historico" class="tab-pane">
-            <h3>Histórico de Transações</h3>
+            <h3><i class="fas fa-stream"></i> Histórico de Transações</h3>
+            
             {% if withdrawal_records %}
-                <div class="history-list">
+                <div class="history-list-custom">
                     {% for record in withdrawal_records %}
-                        <div class="withdrawal-item-custom">
-                            <div class="item-details">
-                                <span class="amount-saque"><i class="fas fa-minus-circle"></i> {{ record.amount|default:"0.00" }} $</span>
-                                <span class="date-saque">{{ record.created_at|date:"d/m/Y H:i" }}</span>
-                            </div>
-                            {# Lógica de Status Django Mantida e Estilizada #}
-                            <span class="status-badge status-{{ record.status|lower|slugify }}">
-                                {% if record.status == 'Aprovado' %}
-                                    <i class="fas fa-check-circle"></i> Aprovado
+                        {# Cartão de Saque Bonito e Ilustrativo #}
+                        <div class="withdrawal-card status-{{ record.status|lower|slugify }}">
+                            <div class="card-icon">
+                                {% if record.status == 'Aprovado' or record.status == 'Approved' %}
+                                    <i class="fas fa-check-circle"></i>
                                 {% elif record.status == 'Pendente' or record.status == 'Pending' %}
-                                    <i class="fas fa-hourglass-start"></i> Pendente
+                                    <i class="fas fa-hourglass-half"></i>
                                 {% elif record.status == 'Rejeitado' or record.status == 'Rejected' %}
-                                    <i class="fas fa-times-circle"></i> Rejeitado
+                                    <i class="fas fa-times-circle"></i>
                                 {% else %}
-                                    {{ record.status }}
+                                    <i class="fas fa-question-circle"></i>
                                 {% endif %}
-                            </span>
+                            </div>
+                            <div class="card-details">
+                                <span class="card-amount">- {{ record.amount|default:"0.00" }} KZ</span>
+                                <span class="card-date">{{ record.created_at|date:"d/m/Y H:i" }}</span>
+                            </div>
+                            <div class="card-status-label">
+                                {% if record.status == 'Aprovado' %}Aprovado
+                                {% elif record.status == 'Pendente' or record.status == 'Pending' %}Pendente
+                                {% elif record.status == 'Rejeitado' or record.status == 'Rejected' %}Rejeitado
+                                {% else %}{{ record.status }}
+                                {% endif %}
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
-                <div class="alert-box info">
-                    <p><i class="fas fa-info-circle"></i> Nenhum histórico de saque encontrado.</p>
+                <div class="alert-box info-custom">
+                    <i class="fas fa-info-circle"></i> 
+                    <p>Ainda não há registos de levantamento.</p>
                 </div>
             {% endif %}
         </div>
-    </div>
+    </div> {# Fim tabs-content-standard #}
 </div>
 
----
-
-🎨  الراتب مستحق لمن يعمل كل يوم
-
 <style>
-    /* Estilos Globais e Reset */
-    .page-header-custom {
+    /* ------------------------------------------------------------------
+    // ESTILOS GERAIS: FUNDO BRANCO E CORES LEGAIS
+    // ------------------------------------------------------------------ */
+    body {
+        background-color: #f7f7f7 !important;
+    }
+    .page-header-custom-white {
         text-align: center;
         padding: 20px 0;
-        background-color: #1c273a; /* Azul Escuro */
-        border-bottom: 3px solid #00c6ff; /* Destaque em Azul Neon */
+        background-color: #fff;
+        border-bottom: 2px solid #e0e0e0;
         margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    .page-header-custom h1 {
-        color: #fff;
+    .page-header-custom-white h1 {
+        color: #333;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 2.5rem;
-        letter-spacing: 1px;
+        font-size: 2.2rem;
     }
-    .saque-container-custom {
-        background-color: #212d40; /* Fundo Principal do Card */
-        padding: 30px;
+    .page-header-custom-white h1 i {
+        color: #007bff;
+        margin-right: 10px;
+    }
+
+    .saque-container-custom-white {
+        background-color: #fff;
+        padding: 20px;
         border-radius: 12px;
         margin: 20px auto;
-        max-width: 600px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        border: 1px solid #3d4a63;
-        color: #e0e0e0;
-    }
-    .saque-container-custom h3 {
-        color: #00c6ff; /* Títulos em Azul Neon */
-        font-size: 1.5rem;
-        border-bottom: 1px solid #3d4a63;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
+        max-width: 600px; /* Reduzi o max-width para um layout mais standard/mobile-first */
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
     }
 
-    /* --- 🧭 Navegação de Abas (Separadores) --- */
-    .tabs-navigation {
+    /* ------------------------------------------------------------------
+    // LAYOUT PRINCIPAL: ABAS HORIZONTAL / EMPILHADA
+    // ------------------------------------------------------------------ */
+    .tabs-navigation-standard {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column; /* FORÇA O EMPILHAMENTO (UMA ABA POR LINHA) */
+        gap: 10px;
         margin-bottom: 20px;
-        border-bottom: 2px solid #3d4a63;
+        padding: 0;
     }
+    .tabs-content-standard {
+        padding: 10px 0;
+    }
+
     .tab-button {
-        flex-grow: 1;
-        background-color: transparent;
-        color: #99a2b5;
-        border: none;
-        padding: 15px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%; /* Ocupa a largura total (Uma aba por linha) */
+        background-color: #f8f9fa; /* Fundo leve para o botão */
+        color: #555;
+        border: 1px solid #e0e0e0;
+        padding: 15px;
         cursor: pointer;
         font-size: 1rem;
-        font-weight: 600;
-        transition: color 0.3s, border-bottom 0.3s;
-        border-bottom: 3px solid transparent;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: background-color 0.2s, color 0.2s, border-color 0.2s;
         outline: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .tab-button .icon-saque {
+        font-size: 1.3rem;
+        margin-right: 10px;
+        color: #007bff;
     }
     .tab-button:hover {
-        color: #fff;
-        background-color: #283a54;
+        background-color: #e9ecef;
+        color: #333;
+        border-color: #c9c9c9;
     }
     .tab-button.active {
-        color: #00c6ff; /* Cor da aba ativa */
-        border-bottom: 3px solid #00c6ff;
+        background-color: #007bff; /* Azul primário para aba ativa */
+        color: #fff;
+        font-weight: 600;
+        border-color: #007bff;
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
     }
+    .tab-button.active .icon-saque {
+        color: #fff;
+    }
+
     .tab-pane {
-        display: none; /* Esconde todas as abas por padrão */
-        padding-top: 20px;
+        display: none;
+        padding: 5px;
     }
     .tab-pane.active {
-        display: block; /* Mostra a aba ativa */
-    }
-
-    /* --- 1º Separador: Informações --- */
-    .info-box-custom {
-        background-color: #283a54; /* Fundo mais escuro */
-        padding: 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-    }
-    .info-box-custom p {
-        margin: 10px 0;
-        font-size: 1rem;
-        border-left: 3px solid #00c6ff;
-        padding-left: 10px;
-    }
-    .info-box-custom i {
-        margin-right: 8px;
-        color: #00c6ff;
-    }
-    .alert-box {
-        padding: 15px;
-        border-radius: 6px;
-        margin-bottom: 15px;
-        font-size: 0.95rem;
-    }
-    .alert-box.warning {
-        background-color: #ff980033;
-        border: 1px solid #ff9800;
-        color: #ff9800;
-    }
-    .alert-box.info {
-        background-color: #00c6ff33;
-        border: 1px solid #00c6ff;
-        color: #00c6ff;
-    }
-
-    /* --- 2º Separador: Formulário de Saque --- */
-    .form-group-custom label {
         display: block;
-        color: #00c6ff;
-        margin-bottom: 10px;
+    }
+
+    /* Títulos de Seção */
+    .tabs-content-standard h3 {
+        color: #333;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 10px;
+    }
+    .tabs-content-standard h3 i {
+        color: #007bff;
+        margin-right: 8px;
+    }
+
+    /* ------------------------------------------------------------------
+    // 1º SEPARADOR: INFORMAÇÕES (MANTIDO)
+    // ------------------------------------------------------------------ */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px; /* Reduzido o gap para ecrãs menores */
+        margin-bottom: 25px;
+    }
+    .info-item {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+        height: 100%; /* Garante altura uniforme */
+    }
+    .info-item i {
+        font-size: 1.5rem;
+        color: #007bff;
+        margin-bottom: 8px;
+    }
+    .info-item p {
+        margin: 0;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .info-item span {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        font-size: 1.1rem;
+    }
+
+    /* ------------------------------------------------------------------
+    // 2º SEPARADOR: FORMULÁRIO (MANTIDO)
+    // ------------------------------------------------------------------ */
+    .form-group-custom-white label {
+        display: block;
+        color: #333;
+        margin-bottom: 8px;
         font-weight: 600;
     }
-    .form-group-custom input {
+    .form-group-custom-white input {
         width: 100%;
         padding: 12px;
         border-radius: 6px;
-        border: 1px solid #3d4a63;
-        background-color: #1c273a; 
-        color: #fff;
+        border: 1px solid #ced4da;
+        background-color: #fff; 
+        color: #333;
         font-size: 1.2rem;
         box-sizing: border-box;
+        margin-bottom: 5px;
     }
-    .saque-button-custom {
+    .form-group-custom-white small {
+        display: block;
+        color: #007bff;
+        margin-bottom: 15px;
+        font-weight: 500;
+    }
+
+    .saque-button-custom-green {
         width: 100%;
         padding: 15px 20px;
-        background-color: #4CAF50; /* Verde de Ação */
+        background-color: #28a745;
         color: #fff;
         border: none;
         border-radius: 6px;
@@ -232,92 +322,129 @@
         font-size: 1.2rem;
         cursor: pointer;
         transition: background-color 0.3s, transform 0.1s;
-        margin-top: 20px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        margin-top: 15px;
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
     }
-    .saque-button-custom:hover {
-        background-color: #388e3c;
-        transform: translateY(-2px);
+    .saque-button-custom-green:hover {
+        background-color: #1e7e34;
+        transform: translateY(-1px);
+    }
+    .saque-button-custom-green:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
     }
 
-    /* --- 3º Separador: Histórico --- */
-    .history-list {
+    /* ------------------------------------------------------------------
+    // 3º SEPARADOR: HISTÓRICO (MANTIDO)
+    // ------------------------------------------------------------------ */
+    .history-list-custom {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
     }
-    .withdrawal-item-custom {
+    .withdrawal-card {
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 15px;
-        background-color: #283a54;
-        border-radius: 8px;
-        transition: background-color 0.2s;
+        padding: 15px 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid;
     }
-    .withdrawal-item-custom:hover {
-        background-color: #3d4a63;
+    .card-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        width: 40px;
+        text-align: center;
     }
-    .item-details {
+    .card-details {
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
     }
-    .amount-saque {
+    .card-amount {
         font-weight: bold;
-        color: #f44336; /* Cor de Destaque para Saque (Vermelho Suave) */
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+        color: #333;
     }
-    .date-saque {
-        color: #99a2b5;
-        font-size: 0.85rem;
+    .card-date {
+        color: #999;
+        font-size: 0.9rem;
     }
-    
-    /* Status Badges */
-    .status-badge {
+    .card-status-label {
+        font-weight: 700;
         padding: 5px 10px;
         border-radius: 20px;
         font-size: 0.85rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        min-width: 100px; /* Para manter o alinhamento */
+        min-width: 100px;
         text-align: center;
+        text-transform: uppercase;
     }
-    .status-aprovado, .status-approved {
-        background-color: #4CAF50; /* Verde */
-        color: #fff;
-    }
-    .status-pendente, .status-pending {
-        background-color: #FFC107; /* Amarelo */
-        color: #333;
-    }
-    .status-rejeitado, .status-rejected {
-        background-color: #f44336; /* Vermelho */
-        color: #fff;
-    }
+
+    /* Cores dos Cartões por Status - MANTIDAS */
+    .withdrawal-card.status-aprovado, .withdrawal-card.status-approved { border-color: #28a745; }
+    .withdrawal-card.status-aprovado .card-icon, .withdrawal-card.status-approved .card-icon { color: #28a745; }
+    .withdrawal-card.status-aprovado .card-status-label, .withdrawal-card.status-approved .card-status-label { background-color: #28a745; color: #fff; }
+
+    .withdrawal-card.status-pendente, .withdrawal-card.status-pending { border-color: #ffc107; }
+    .withdrawal-card.status-pendente .card-icon, .withdrawal-card.status-pending .card-icon { color: #ffc107; }
+    .withdrawal-card.status-pendente .card-status-label, .withdrawal-card.status-pending .card-status-label { background-color: #ffc107; color: #333; }
+
+    .withdrawal-card.status-rejeitado, .withdrawal-card.status-rejected { border-color: #dc3545; }
+    .withdrawal-card.status-rejeitado .card-icon, .withdrawal-card.status-rejected .card-icon { color: #dc3545; }
+    .withdrawal-card.status-rejeitado .card-status-label, .withdrawal-card.status-rejected .card-status-label { background-color: #dc3545; color: #fff; }
     
-    /* Mensagens de Feedback */
-    .messages-custom {
-        list-style-type: none;
-        padding: 0;
-        margin-bottom: 20px;
-    }
-    .messages-custom li {
-        padding: 12px;
-        margin-bottom: 10px;
-        border-radius: 6px;
-        color: #fff;
-        font-weight: 500;
-    }
-    .messages-custom .success {
-        background-color: #4CAF50;
-    }
-    .messages-custom .error {
-        background-color: #f44336;
+    /* ------------------------------------------------------------------
+    // MENSAGENS E ALERTAS (MANTIDO)
+    // ------------------------------------------------------------------ */
+    .alert-box { padding: 15px; border-radius: 8px; margin-top: 20px; display: flex; align-items: center; font-size: 1rem; }
+    .alert-box i { font-size: 1.5rem; margin-right: 15px; }
+    .alert-box p { margin: 0; }
+    .alert-box a { color: inherit; font-weight: bold; text-decoration: underline; }
+    .alert-box.warning-custom { background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
+    .alert-box.error-custom { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    .alert-box.info-custom { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+    .messages-custom li { color: #333; }
+    .messages-custom .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+    .messages-custom .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    
+    /* ------------------------------------------------------------------
+    // RESPONSIVIDADE OTIMIZADA PARA MOBILE/STANDARD
+    // ------------------------------------------------------------------ */
+    @media (max-width: 650px) { /* Ajusta para telas menores */
+        .page-header-custom-white h1 {
+            font-size: 1.8rem;
+        }
+        .saque-container-custom-white {
+            padding: 15px;
+            margin: 10px auto;
+            border-radius: 8px;
+        }
+        .tab-button {
+            padding: 12px;
+            font-size: 0.95rem;
+        }
+        /* As grades de informação quebram para uma única coluna */
+        .info-grid {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+        .withdrawal-card {
+            padding: 12px;
+        }
+        .card-amount {
+            font-size: 1.1rem;
+        }
+        .card-icon {
+            font-size: 1.5rem;
+        }
     }
 </style>
 
 <script>
-    // Função JavaScript para controlar a troca de abas
+    // Função JavaScript para controlar a troca de abas (Mantida)
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
 
@@ -340,7 +467,6 @@
 
     // Inicializa a página abrindo a primeira aba ('informacoes')
     document.addEventListener("DOMContentLoaded", function() {
-        // Assegura que pelo menos um botão de aba existe antes de tentar clicar
         const firstTabButton = document.querySelector(".tab-button");
         if (firstTabButton) {
             firstTabButton.click();

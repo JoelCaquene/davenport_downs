@@ -4,76 +4,257 @@
 {% block title %}Roleta da Sorte{% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>Roleta da Sorte</h1>
+<div class="page-header professional-header">
+    <h1>🎰 Roleta da Sorte</h1>
 </div>
+
 <div class="roulette-container">
-    <p>Gire a roleta e ganhe prémios!</p>
-    <p>Giros disponíveis: <span id="roulette-spins">{{ roulette_spins }}</span></p>
+    <div class="info-section">
+        <p class="lead-text">Gire a roleta e ganhe prémios!</p>
+        <p class="spins-counter">Giros disponíveis: <span id="roulette-spins" class="badge-spins">{{ roulette_spins }}</span></p>
+    </div>
     
     {% csrf_token %}
 
-    <div class="roulette-wheel-wrapper">
-        <img id="roulette-wheel" src="{% static 'images/roulette_wheel.png' %}" alt="Roleta da Sorte" class="roulette-wheel">
+    <div class="roulette-game-area">
+        <div class="pointer-indicator"></div>
+        <div class="roulette-wheel-wrapper">
+            <img id="roulette-wheel" src="{% static 'images/roulette_wheel.png' %}" alt="Roleta da Sorte" class="roulette-wheel">
+        </div>
     </div>
 
-    <button type="button" class="spin-button" id="spin-button" {% if not roulette_spins or roulette_spins <= 0 %}disabled{% endif %}>Girar</button>
+    <button type="button" class="spin-button" id="spin-button" {% if not roulette_spins or roulette_spins <= 0 %}disabled{% endif %}>GIRAR AGORA</button>
     
     <div class="roulette-result" id="roulette-result"></div>
 </div>
 
+<div id="prize-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <div class="prize-display">
+            <span class="star-icon">⭐️</span>
+            <h2 class="prize-title">PARABÉNS! VOCÊ GANHOU!</h2>
+            <p id="modal-prize-amount" class="prize-amount"></p>
+            <p class="prize-message">O valor foi adicionado ao seu saldo de subsídios e saldo ativo.</p>
+        </div>
+    </div>
+</div>
+
 <style>
-    .page-header {
+    /* Estilos Globais da Base (Adaptação ao Tema Branco) */
+    .page-header.professional-header {
         text-align: center;
-        padding: 20px 0;
-        background-color: #00004d;
-        border-bottom: 2px solid #4CAF50;
+        padding: 15px 0;
+        /* Fundo branco como o resto da interface */
+        background-color: #FFFFFF; 
+        border-bottom: 3px solid #00A65A; /* Cor de destaque/verde */
         margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .page-header h1 {
-        color: #4CAF50;
+        color: #00004d; /* Azul Escuro */
+        font-size: 1.8rem;
     }
+
+    /* Container Principal */
     .roulette-container {
-        background-color: #00004d;
-        padding: 20px;
-        border-radius: 10px;
+        background-color: #FFFFFF; /* Fundo Branco */
+        border: 1px solid #ddd;
+        padding: 30px 20px;
+        border-radius: 12px;
         margin: 20px auto;
-        max-width: 400px;
+        max-width: 450px;
         text-align: center;
-        color: #fff;
+        color: #333; /* Texto escuro */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Info Section */
+    .info-section {
+        margin-bottom: 20px;
+    }
+    .lead-text {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #00004d;
+    }
+    .spins-counter {
+        font-size: 1.0rem;
+        font-weight: 400;
+        margin-top: 5px;
+    }
+    .badge-spins {
+        background-color: #FFC107; /* Amarelo (Dourado) */
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        display: inline-block;
+        min-width: 30px;
+        text-align: center;
+    }
+
+    /* Área do Jogo (Roda) */
+    .roulette-game-area {
+        position: relative;
+        width: 100%;
+        max-width: 320px;
+        margin: 20px auto 40px;
     }
     .roulette-wheel-wrapper {
         position: relative;
         width: 100%;
-        max-width: 300px;
-        margin: 20px auto;
+        padding-top: 100%; /* Mantém proporção 1:1 */
     }
     .roulette-wheel {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
-        display: block;
-        transition: transform 5s cubic-bezier(0.1, 0.9, 0.4, 1.1);
+        height: 100%;
+        border-radius: 50%;
+        border: 8px solid #00A65A; /* Borda da Roleta */
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        /* Transição mais suave e com elasticidade */
+        transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
     }
+    .pointer-indicator {
+        position: absolute;
+        top: -15px; /* Posição acima da roda */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0; 
+        height: 0; 
+        border-left: 15px solid transparent;
+        border-right: 15px solid transparent;
+        border-bottom: 25px solid #E91E63; /* Cor do Ponteiro (Rosa/Vermelho) */
+        z-index: 10;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+
+    /* Botão de Girar */
     .spin-button {
-        padding: 15px 30px;
-        background-color: #4CAF50;
+        padding: 15px 40px;
+        background-color: #00A65A; /* Verde Profissional */
         color: #fff;
         border: none;
-        border-radius: 50px;
-        font-size: 1.2rem;
+        border-radius: 30px;
+        font-size: 1.3rem;
         cursor: pointer;
         font-weight: bold;
-        transition: background-color 0.3s;
+        transition: background-color 0.3s, transform 0.2s;
+        box-shadow: 0 5px 15px rgba(0, 166, 90, 0.4);
+        letter-spacing: 1px;
+    }
+    .spin-button:hover:not(:disabled) {
+        background-color: #008D4C;
+        transform: translateY(-2px);
     }
     .spin-button:disabled {
-        background-color: #555;
+        background-color: #A0A0A0;
         cursor: not-allowed;
+        box-shadow: none;
     }
+    
+    /* Resultados (Pré-spin) */
     .roulette-result {
-        margin-top: 20px;
+        margin-top: 30px;
         font-size: 1.2rem;
-        font-weight: bold;
-        color: #FFD700;
+        font-weight: 600;
+        color: #00004d; /* Azul Escuro */
         min-height: 25px;
+    }
+
+    /* --- Modal e Efeito Prêmio --- */
+    .modal {
+        display: none; 
+        position: fixed; 
+        z-index: 100; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgba(0,0,0,0.7); 
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 5% auto; 
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%; 
+        max-width: 400px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        border: 5px solid #FFD700; /* Borda Dourada */
+        /* Efeito de luz (animação de brilho suave) */
+        animation: glow 1.5s infinite alternate;
+    }
+    
+    @keyframes glow {
+        from {
+            box-shadow: 0 0 10px #FFD700, 0 0 20px #FFC107;
+        }
+        to {
+            box-shadow: 0 0 20px #FFD700, 0 0 40px #FFC107;
+        }
+    }
+
+    .close-button {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+    }
+
+    .close-button:hover,
+    .close-button:focus {
+        color: #E91E63;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    
+    .prize-display {
+        margin-top: 10px;
+    }
+
+    .star-icon {
+        font-size: 3rem;
+        display: block;
+        margin-bottom: 10px;
+        animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    .prize-title {
+        color: #00A65A;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .prize-amount {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #00004d;
+        margin-top: 10px;
+    }
+
+    .prize-message {
+        color: #666;
+        font-size: 0.9rem;
+        margin-top: 15px;
     }
 </style>
 
@@ -83,15 +264,30 @@
         const rouletteWheel = document.getElementById('roulette-wheel');
         const resultDisplay = document.getElementById('roulette-result');
         const spinsDisplay = document.getElementById('roulette-spins');
-        // Agora o JavaScript consegue encontrar o input com o token CSRF
         const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
-        // Verifica se os elementos foram encontrados antes de adicionar o event listener
+        // Modal elements
+        const prizeModal = document.getElementById('prize-modal');
+        const modalPrizeAmount = document.getElementById('modal-prize-amount');
+        const closeModal = document.querySelector('.close-button');
+
+        // Close modal functions
+        closeModal.onclick = function() {
+            prizeModal.style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target == prizeModal) {
+                prizeModal.style.display = 'none';
+            }
+        }
+        
         if (spinButton && rouletteWheel) {
             spinButton.addEventListener('click', function() {
-                // Desativa o botão para evitar múltiplos giros
                 spinButton.disabled = true;
-                resultDisplay.textContent = 'Girando...';
+                resultDisplay.textContent = 'Girando... Aguarde o resultado...';
+                rouletteWheel.style.transition = 'transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                // Gira a roda um número aleatório de vezes para dar o efeito de spin
+                rouletteWheel.style.transform = `rotate(3600deg)`;
 
                 fetch('{% url "spin_roulette" %}', {
                     method: 'POST',
@@ -99,30 +295,50 @@
                         'Content-Type': 'application/json',
                         'X-CSRFToken': csrfToken
                     },
-                    body: JSON.stringify({}) // Envia um corpo vazio
+                    body: JSON.stringify({})
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        const prize = data.prize;
-                        const degrees = Math.floor(Math.random() * 360) + 360 * 5;
+                        const prize = parseFloat(data.prize);
+                        // Lógica para calcular os graus necessários para que o prêmio caia em um setor específico.
+                        // (Isso depende da sua imagem 'roulette_wheel.png' e da ordem dos prêmios)
+                        // Para fins de demonstração, vamos apenas adicionar mais rotação aleatória.
+                        const extraDegrees = Math.floor(Math.random() * 360) + 720; // 2 voltas extras + 0-360
                         
-                        rouletteWheel.style.transform = `rotate(${degrees}deg)`;
+                        // Garante que a transição seja redefinida para a rotação final
+                        rouletteWheel.style.transition = 'transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                        rouletteWheel.style.transform = `rotate(${3600 + extraDegrees}deg)`;
 
                         setTimeout(() => {
-                            resultDisplay.textContent = data.message;
+                            // 1. Exibir Modal de Prêmio
+                            modalPrizeAmount.textContent = `${prize.toFixed(2)} KZ`;
+                            prizeModal.style.display = 'block';
+
+                            // 2. Atualizar contagem e resultado no painel
+                            resultDisplay.textContent = `Você ganhou ${prize.toFixed(2)} KZ!`;
                             spinsDisplay.textContent = parseInt(spinsDisplay.textContent) - 1;
-                            spinButton.disabled = false;
-                        }, 5000);
+                            
+                            // 3. Reativar o botão (e desativar se os giros acabaram)
+                            const remainingSpins = parseInt(spinsDisplay.textContent);
+                            if (remainingSpins > 0) {
+                                spinButton.disabled = false;
+                            } else {
+                                spinButton.disabled = true;
+                            }
+                        }, 6000); // Espera 6 segundos para a transição terminar
                     } else {
                         resultDisplay.textContent = data.message;
                         spinButton.disabled = false;
+                        // Resetar a rotação se for uma falha imediata
+                        rouletteWheel.style.transform = `rotate(0deg)`;
                     }
                 })
                 .catch(error => {
                     console.error('Erro:', error);
                     resultDisplay.textContent = 'Ocorreu um erro ao girar a roleta. Tente novamente.';
                     spinButton.disabled = false;
+                    rouletteWheel.style.transform = `rotate(0deg)`;
                 });
             });
         }
