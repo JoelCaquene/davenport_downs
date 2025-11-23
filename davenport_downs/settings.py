@@ -18,9 +18,15 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # ======================================================================
-# CONFIGURAÇÃO DOS HOSTS PERMITIDOS (AJUSTADO)
+# CONFIGURAÇÃO DOS HOSTS PERMITIDOS (CORRIGIDO PARA O RENDER.COM)
 # ======================================================================
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+# 1. Pega a string de hosts (ex: "host1, host2, host3")
+hosts_string = config('ALLOWED_HOSTS', default='')
+
+# 2. Divide a string pela vírgula e usa list comprehension para remover espaços em branco de cada host
+# Isso garante que a lista de hosts fique limpa (ex: ['host1', 'host2', 'host3'])
+ALLOWED_HOSTS = [host.strip() for host in hosts_string.split(',') if host.strip()]
+
 
 # Adiciona o hostname do Render dinamicamente se não estiver em DEBUG
 if not DEBUG:
@@ -31,8 +37,10 @@ if not DEBUG:
             ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
         
         # Adiciona o domínio base do Render para que todos os subdomínios funcionem
-        if '.onrender.com' not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append('.onrender.com') 
+        # Nota: Normalmente, apenas o sufixo '.onrender.com' é suficiente, mas vamos manter
+        # a lógica original, garantindo que o Render Hostname (davenport-downs.onrender.com)
+        # já está coberto pela variável de ambiente ALLOWED_HOSTS
+        pass 
 
 # Application definition
 INSTALLED_APPS = [
