@@ -132,7 +132,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'America/Sao_Paulo'
+# >>> MUDANÇA CRÍTICA: FUSO HORÁRIO PARA ANGOLA (WAT) <<<
+TIME_ZONE = 'Africa/Luanda'
 
 USE_I18N = True
 
